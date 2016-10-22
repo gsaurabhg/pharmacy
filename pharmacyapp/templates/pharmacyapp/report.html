@@ -1,0 +1,75 @@
+{% extends 'pharmacyapp/base.html' %}
+
+
+{% block sidenav_block %}
+
+		<form method="POST" class="report">{% csrf_token %}
+		<p><button type="submit" class="report btn btn-default" name="Today" value="Today">Today's Sale</button>
+		<button type="submit" class="report btn btn-default" name="Yesterday" value="Yesterday">Yesterday's Sale</button></p>
+		<p> ===========================</p>
+		<h3>Custom Search</h3>
+		<p>Pick a start Date: <input type="text" id="startDate" name="startDate" /></p>
+		<p>Pick a end Date: <input type="text" id="endDate" name="endDate" /></p>
+		<button type="submit" class="report btn btn-default" name="custom" value="custom">Search</button>
+		<p> ===========================</p>
+		</form>
+
+	{% if messages %}
+	<h2 class="messages">
+		{% for message in messages %}
+		<a{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</a>
+		{% endfor %}
+	</h2>
+	{% endif %}
+
+{% endblock %}
+
+{% block body_block %}
+
+		<div id="printarea">
+		<table id="daysales">
+		<caption><h1>List of Medicines Sold on Enquired date</h1></caption>
+		<tbody>
+		<tr>
+			<th>Bil Date</th>
+			<th>Medicine Name</th>
+			<th>Batch Number</th>
+			<th>Quantity Sold</th>
+			<th>Price</th>
+		</tr>
+		{% for report in reports%}
+		<tr>
+			<td>{{ report.billDate }}</td>
+			<td>{{ report.medicineName }}</td>
+			<td>{{ report.batchNo}}</td>
+			<td>{{ report.noOfTabletsOrdered}}</td>
+			<td>{{ report.discountedPrice}}</td>
+		</tr>
+		{% endfor %}
+		<tr>
+		    <th> Total Sales</th>
+		    <th></th>
+		    <th></th>
+		    <th></th>
+		    <th id="TPP"></th>
+		</tr>
+		</tbody>
+		</table>
+		</div>
+
+    {% if user.is_authenticated %}
+    <script type="text/javascript" src="/static/js/jscript-queries.js"></script>
+    <input type="button" onclick="printDiv('printarea')" value="Print" />
+    {% endif %}
+
+
+{% if reports %}
+    <body onload="finishTable_v1();">
+    <script type="text/javascript" src="/static/js/jscript-queries.js"></script>
+    </body>
+{% endif %}
+
+
+
+
+{% endblock body_block%}

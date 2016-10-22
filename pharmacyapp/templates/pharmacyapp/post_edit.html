@@ -1,0 +1,21 @@
+{% extends 'pharmacyapp/base.html' %}
+
+{% block body_block %}
+	{% if messages %}
+	<h2 class="messages">
+		{% for message in messages %}
+		<a{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</a>
+		{% endfor %}
+	</h2>
+	{% endif %}
+
+    <h1>Medicine Entry Form</h1>
+    <form method="POST" class="post-form">{% csrf_token %}
+        <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
+        <button type="submit" class="save btn btn-default" name="clear" value="clear">Clear</button>
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
+        <button type="submit" class="save btn btn-default" name="clear" value="clear">Clear</button>
+    </form>
+{% endblock body_block%}
+

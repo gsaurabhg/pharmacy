@@ -1,0 +1,56 @@
+{% extends 'pharmacyapp/base.html' %}
+
+{% block body_block %}
+	{% if messages %}
+	<h2 class="messages">
+		{% for message in messages %}
+		<a{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</a>
+		{% endfor %}
+	</h2>
+	{% endif %}
+
+	<table>
+		<caption><h1>Selected Medicine Details </h1></caption>
+		<tr>
+			<th>Medicine Name</th>
+			<th>Batch No.</th>
+			<th>Expiry Date</th>
+			<th>Tablets per Strip</th>
+			<th>Strips Purchased</th>
+			<th>Price per Strip</th>
+			<th>Net Purchase Price</th>
+			<th>M.R.P.</th>
+			<th>Date of Purchase</th>
+			<th>VAT1 (%)</th>
+			<th>VAT2 (%)</th>
+			<th>Add. Tax (%)</th>
+			<th>Tablets</th>
+			<th>Price Per Tablet</th>
+			<th>Tablets Sold</th>
+			<th>Tablets In Store</th>
+		</tr>
+		<tr>
+			<td><a href="{% url 'post_detail' pk=post.pk %}">{{ post.medicineName }}</a></td>
+			<td>{{ post.batchNo }}</td>
+			<td>{{ post.expiryDate}}</td>
+			<td>{{ post.pack }}</td>
+			<td>{{ post.quantity}}</td>
+			<td>{{ post.pricePerStrip}}</td>
+			<td>{{ post.netPurchasePrice}}</td>
+			<td>{{ post.mrp }}</td>
+			<td>{{ post.dateOfPurchase }}</td>
+			<td>{{ post.vat1}}</td>
+			<td>{{ post.vat2}}</td>
+			<td>{{ post.addTax}}</td>
+			<td>{{ post.noOfTablets}}</td>
+			<td>{{ post.pricePerTablet}}</td>
+			<td>{{ post.noOfTabletsSold}}</td>
+			<td>{{ post.noOfTabletsInStores}}</td>
+		</tr>
+	</table>
+	{% if user.is_authenticated %}
+	<a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}">Edit Record</a>
+	<a class="btn btn-default" href="{% url 'post_list' %}">Inventory</a>
+	{% endif %}
+
+{% endblock body_block%}

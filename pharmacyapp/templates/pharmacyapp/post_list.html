@@ -1,0 +1,50 @@
+{% extends 'pharmacyapp/base.html' %}
+
+{% block sidenav_block %}
+	<h4>To add the new medicines in the Inventory</h4>
+	<a <button type="submit" class="save btn btn-default" href="{% url 'post_new' %}">Add</button></a>
+{% endblock %}
+
+
+{% block body_block %}
+
+	{% if messages %}
+	<h2 class="messages">
+		{% for message in messages %}
+		<a{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</a>
+		{% endfor %}
+	</h2>
+	{% endif %}
+
+	</body>
+	<table>
+		<caption><h1>List of Medicines in Pharmacy</h1></caption>
+		<tr>
+			<th>Medicine Name</th>
+			<th>Batch No.</th>
+			<th>Expiry Date</th>
+			<th>Date of Purchase</th>
+			<th>Tablets</th>
+			<th>Price Per Tablet</th>
+			<th>Tablets Sold</th>
+			<th>Tablets In Store</th>
+		</tr>
+		{% for post in posts %}
+		<tr>
+			{% if user.username == "admin" or user.username == "saurabhg" %}
+			<td><a href="{% url 'post_detail' pk=post.pk %}">{{ post.medicineName }}</a></td>
+			{% else %}
+			<td>{{ post.medicineName }}</td>
+			{% endif %}
+			<td>{{ post.batchNo }}</td>
+			<td>{{ post.expiryDate}}</td>
+			<td>{{ post.dateOfPurchase }}</td>
+			<td>{{ post.noOfTablets}}</td>
+			<td>{{ post.pricePerTablet}}</td>
+			<td>{{ post.noOfTabletsSold}}</td>
+			<td>{{ post.noOfTabletsInStores}}</td>
+		</tr>
+		{% endfor %}
+		</table>
+
+{% endblock body_block%}
