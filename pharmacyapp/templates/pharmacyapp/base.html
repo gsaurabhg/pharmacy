@@ -23,12 +23,19 @@
 								<a <button type="submit" class="save btn btn-default" href="/">Home</button></a>
 						   {% endif %}
 						</ul>
-						<ul class="nav">
+						<ul class="nav navbar-nav">
 						  <li><a href="/">Home</a></li>
 						  {% if user.is_authenticated %}
 						  		<li><a href="{% url 'post_list' %}">Inventory</a></li>
 								<li><a href="{% url 'patient_details' %}">Bill</a></li>
-								<li><a href="{% url 'report' %}">Report</a></li>
+								<li class="dropdown">
+								<a class="dropdown-toggle" data-toggle="dropdown" href="/">Overall Report
+								        <span class="caret"></span></a>
+								        <ul class="dropdown-menu">
+								          <li><a href="{% url 'report_sales' %}">Report - Sales</a></li>
+								          <li><a href="#">Report - Return</a></li>
+								        </ul>
+									    </li>
 						  {% endif %}
 						</ul>
 				   </div>

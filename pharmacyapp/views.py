@@ -233,18 +233,18 @@ def medicine_remove(request, pk):
         return redirect('bill_details', pk=patientDetail.pk)
     
 
-def report(request):
+def report_sales(request):
     form = reportForm(request.POST)
     if (request.method == "POST" and request.POST.get('Today')):
         startdate = date.today()
         enddate = startdate+timedelta(days=0)
         reports= Bill.objects.filter(billDate__range=[startdate, enddate],transactionCompleted__exact = 'Y').order_by('medicineName')
-        return render(request, 'pharmacyapp/report.html', {'reports': reports})
+        return render(request, 'pharmacyapp/report_sales.html', {'reports': reports})
     elif(request.method == "POST" and request.POST.get('Yesterday')):
         startdate = date.today()-timedelta(days=1)
         enddate = startdate+timedelta(days=0)
         reports= Bill.objects.filter(billDate__range=[startdate, enddate],transactionCompleted__exact = 'Y')
-        return render(request, 'pharmacyapp/report.html', {'reports': reports})
+        return render(request, 'pharmacyapp/report_sales.html', {'reports': reports})
     elif(request.method == "POST" and request.POST.get('custom')):
         webFormFields = request.POST
         if 'startDate' in request.POST:
@@ -253,15 +253,15 @@ def report(request):
                 enddate = datetime.datetime.strptime(webFormFields['endDate'],'%d-%m-%Y')
                 if enddate < startdate:
                     messages.info(request,"End date can not be earlier than start date")
-                    return render(request, 'pharmacyapp/report.html', {'form': form})
+                    return render(request, 'pharmacyapp/report_sales.html', {'form': form})
                 reports= Bill.objects.filter(billDate__range=[startdate, enddate],transactionCompleted__exact = 'Y')
-                return render(request, 'pharmacyapp/report.html', {'reports': reports})
+                return render(request, 'pharmacyapp/report_sales.html', {'reports': reports})
             else:
                 messages.info(request,"Enter the dates")
-                return render(request, 'pharmacyapp/report.html', {'form': form})
+                return render(request, 'pharmacyapp/report_sales.html', {'form': form})
         else:
-            return render(request, 'pharmacyapp/report.html', {'form': form})
-    return render(request, 'pharmacyapp/report.html', {'form': form})
+            return render(request, 'pharmacyapp/report_sales.html', {'form': form})
+    return render(request, 'pharmacyapp/report_sales.html', {'form': form})
     
 def get_batch_no(request, medName):
     medName=medName.replace("-_____-"," ")
