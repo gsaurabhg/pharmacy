@@ -78,9 +78,9 @@ function printDiv(divName) {
 }
 
 
-function finishTable_v1()
+function finishTable_v1(colNo)
 {
-  var totalPrice = computeTableColumnTotal("daysales",4);
+  var totalPrice = computeTableColumnTotal("daysales",colNo);
   try
   {
     window.document.getElementById("TPP").innerHTML = totalPrice;
@@ -154,9 +154,8 @@ $(document).ready(function() {
 
 function adjustQuantity(retMed,medPK,medOrdered,returnSalesNoOfTablets,returnSales,expiryDate)
 {
-	if (isNaN(retMed) || isNaN(medPK) || retMed =="" )
+	if (isNaN(retMed) || isNaN(medPK) || retMed =="" || retMed == 0 )
 	{
-		document.getElementById("returnQuantity").disabled = true;
 		alert("Must Input Numbers");
 		return;
 	}

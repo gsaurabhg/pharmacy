@@ -29,11 +29,11 @@
 						  		<li><a href="{% url 'post_list' %}">Inventory</a></li>
 								<li><a href="{% url 'patient_details' %}">Bill</a></li>
 								<li class="dropdown">
-								<a class="dropdown-toggle" data-toggle="dropdown" href="/">Overall Report
+								<a class="dropdown-toggle" data-toggle="dropdown" href="/">Report
 								        <span class="caret"></span></a>
 								        <ul class="dropdown-menu">
-								          <li><a href="{% url 'report_sales' %}">Report - Sales</a></li>
-								          <li><a href="#">Report - Return</a></li>
+								          <li><a href="{% url 'report_sales' %}">Sales</a></li>
+								          <li><a href="{% url 'report_returns' %}">Return</a></li>
 								        </ul>
 									    </li>
 						  {% endif %}

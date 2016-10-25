@@ -4,8 +4,8 @@
 {% block sidenav_block %}
 
 		<form method="POST" class="report">{% csrf_token %}
-		<p><button type="submit" class="report btn btn-default" name="Today" value="Today">Today's Sale</button>
-		<button type="submit" class="report btn btn-default" name="Yesterday" value="Yesterday">Yesterday's Sale</button></p>
+		<p><button type="submit" class="report btn btn-default" name="Today" value="Today">Today's Return</button>
+		<button type="submit" class="report btn btn-default" name="Yesterday" value="Yesterday">Yesterday's Return</button></p>
 		<p> ===========================</p>
 		<h3>Custom Search</h3>
 		<p>Pick a start Date: <input type="text" id="startDate" name="startDate" /></p>
@@ -28,26 +28,32 @@
 
 		<div id="printarea">
 		<table id="daysales">
-		<caption><h1>List of Medicines Sold on Enquired date</h1></caption>
+		<caption><h1>List of Medicines Returned on Enquired date</h1></caption>
 		<tbody>
 		<tr>
-			<th>Bil Date</th>
+			<th>Bill Return Date</th>
+			<th>Nill Number</th>
 			<th>Medicine Name</th>
 			<th>Batch Number</th>
-			<th>Quantity Sold</th>
-			<th>Price</th>
+			<th>Quantity Ordered</th>
+			<th>Quantity Returned</th>
+			<th>Refund</th>
 		</tr>
 		{% for report in reports%}
 		<tr>
-			<td>{{ report.billDate }}</td>
+			<td>{{ report.returnSalesBillDate }}</td>
+			<td>{{ report.billNo }}</td>
 			<td>{{ report.medicineName }}</td>
 			<td>{{ report.batchNo}}</td>
 			<td>{{ report.noOfTabletsOrdered}}</td>
-			<td>{{ report.discountedPrice}}</td>
+			<td>{{ report.returnSalesNoOfTablets}}</td>
+			<td>{{ report.returnDiscountedPrice}}</td>
 		</tr>
 		{% endfor %}
 		<tr>
-		    <th> Total Sales</th>
+		    <th> Total Refunds</th>
+		    <th></th>
+		    <th></th>
 		    <th></th>
 		    <th></th>
 		    <th></th>
@@ -64,7 +70,7 @@
 
 
 {% if reports %}
-    <body onload="finishTable_v1(4);">
+    <body onload="finishTable_v1(6);">
     <script type="text/javascript" src="/static/js/jscript-queries.js"></script>
     </body>
 {% endif %}

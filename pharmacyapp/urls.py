@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^post/(?P<pk>\d+)/$', views.post_detail, name='post_detail'),
     url(r'^post/new/$', views.post_new, name='post_new'),
     url(r'^post/report/sales/$', views.report_sales, name='report_sales'),
+    url(r'^post/report/returns/$', views.report_returns, name='report_returns'),
     url(r'^post/(?P<pk>\d+)/edit/$', views.post_edit, name='post_edit'),
     url(r'^patient/details/$', views.patient_details, name='patient_details'),
     url(r'^Patient/details/(?P<pk>\d+)/$', views.bill_details, name='bill_details'),
