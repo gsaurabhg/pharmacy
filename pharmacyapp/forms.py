@@ -6,7 +6,7 @@ from .models import PatientDetail, returnBill
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ['pharmacy_user','freeArticles','netPurchasePrice','noOfTablets','pricePerTablet','noOfTabletsSold','noOfTabletsInStores']
+        exclude = ['pharmacy_user','freeArticles','netPurchasePrice','noOfTablets','pricePerTablet','noOfTabletsSold','noOfTabletsInStores','expiryDate']
         widgets = {
                 'quantity' : forms.TextInput(    attrs   =  {'placeholder':'Enter the number of strips'}),
                 'mrp' : forms.TextInput(    attrs   =  {'placeholder':'Maximum Retail Price per strip'}),

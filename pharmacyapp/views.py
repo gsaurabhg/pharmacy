@@ -47,6 +47,8 @@ def post_new(request):
                     return redirect('post_list')
                 except ObjectDoesNotExist:
                     currentDate = format(timezone.now(),'%Y-%m-%d')
+                    webFormFields = request.POST
+                    post.expiryDate = datetime.datetime.strptime(webFormFields['expiryDateForm'],'%d-%m-%Y')
                     enteredDate = format(post.expiryDate,'%Y-%m-%d')
                     if enteredDate < currentDate:
                         messages.info(request,"enter the proper expiry Date")
@@ -78,6 +80,8 @@ def post_edit(request, pk):
             post.pricePerTablet = post.mrp/post.pack
             post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold
             post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat1+post.vat2+post.addTax)/100)
+            webFormFields = request.POST
+            post.expiryDate = datetime.datetime.strptime(webFormFields['expiryDateForm'],'%d-%m-%Y')
             post.save()
             return redirect('post_list')
     else:
@@ -272,15 +276,16 @@ def get_batch_no(request, medName):
 @login_required  
 def medicine_adjust(request, retMed, medPK):
     billAdjust = get_object_or_404(Bill, pk=medPK)
+    if billAdjust.returnSales == "Y" :
+    	return
     billAdjust.returnSalesNoOfTablets  = retMed
     billAdjust.returnSalesBillDate = timezone.now()
     billAdjust.returnDiscountedPrice = Decimal(retMed)*billAdjust.pricePerTablet*Decimal(1-billAdjust.discount/100)
     billAdjust.returnSales = 'Y'
+    billAdjust.save()
     medsAdjust = Post.objects.all().filter(medicineName__exact = billAdjust.medicineName,batchNo__exact = billAdjust.batchNo).get()
     medsAdjust.noOfTabletsSold = medsAdjust.noOfTabletsSold - int(retMed)
     medsAdjust.noOfTabletsInStores = medsAdjust.noOfTabletsInStores + int(retMed)
-
-    billAdjust.save()
     medsAdjust.save()
     return render(request, 'pharmacyapp/medicine_adjust.html', {'billAdjust': billAdjust})
     
