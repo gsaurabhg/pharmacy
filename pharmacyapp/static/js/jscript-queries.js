@@ -194,7 +194,11 @@ function adjustQuantity(retMed,medPK,medOrdered,returnSalesNoOfTablets,returnSal
 	}
     if (window.confirm("Are you sure you want to return "+ retMed + " medicines") == true) {
 		var url = "/bill" + "/details/" + retMed + "/" + medPK;
-		$.getJSON(url, function(models){});
+		$.getJSON(url, function(retMedOrNot){
+			if(retMedOrNot == "Y"){
+				alert("Already Returned");
+			}
+		});
 		window.location.reload();
 		document.getElementById("returnQuantity").disabled = true;
 	}else {

@@ -277,7 +277,9 @@ def get_batch_no(request, medName):
 def medicine_adjust(request, retMed, medPK):
     billAdjust = get_object_or_404(Bill, pk=medPK)
     if billAdjust.returnSales == "Y" :
-    	return
+        medRetOrNot = 'Y' 
+        json_models = serializers.serialize("json", medRetOrNot)
+        return HttpResponse(json_models, content_type="application/javascript")
     billAdjust.returnSalesNoOfTablets  = retMed
     billAdjust.returnSalesBillDate = timezone.now()
     billAdjust.returnDiscountedPrice = Decimal(retMed)*billAdjust.pricePerTablet*Decimal(1-billAdjust.discount/100)
