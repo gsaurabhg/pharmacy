@@ -48,6 +48,11 @@ def post_new(request):
                 except ObjectDoesNotExist:
                     currentDate = format(timezone.now(),'%Y-%m-%d')
                     webFormFields = request.POST
+                    try:
+                            datetime.datetime.strptime(webFormFields['expiryDateForm'], '%d-%m-%Y')
+                    except ValueError:
+                            messages.info(request,"Expiry Date to be in DD-MM-YYY format")
+                            return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                     post.expiryDate = datetime.datetime.strptime(webFormFields['expiryDateForm'],'%d-%m-%Y')
                     enteredDate = format(post.expiryDate,'%Y-%m-%d')
                     if enteredDate < currentDate:
@@ -81,6 +86,11 @@ def post_edit(request, pk):
             post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold
             post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat1+post.vat2+post.addTax)/100)
             webFormFields = request.POST
+            try:
+                datetime.datetime.strptime(webFormFields['expiryDateForm'], '%d-%m-%Y')
+            except ValueError:
+                messages.info(request,"Expiry Date to be in DD-MM-YYY format")
+                return render(request, 'pharmacyapp/post_edit.html', {'form': form})
             post.expiryDate = datetime.datetime.strptime(webFormFields['expiryDateForm'],'%d-%m-%Y')
             post.save()
             return redirect('post_list')
