@@ -10,7 +10,7 @@ class Post(models.Model):
     medicineName = models.CharField("Medicine Name",max_length=48,blank=False)
     batchNo = models.CharField("Enter the Batch Number",max_length=50, blank=False)
     expiryDate = models.DateField("Expiry Date")
-    pack = models.PositiveSmallIntegerField("No. of Tablets per Strip",default ='0')
+    pack = models.PositiveSmallIntegerField("No. of Tablets per Strip/Bottles",default ='1')
     freeArticles = models.PositiveSmallIntegerField("Free Strips",default ='0')
     quantity = models.PositiveSmallIntegerField("Enter the number of strips Purchased")
     pricePerStrip = models.DecimalField(max_digits=5, decimal_places=2,validators=[MinValueValidator(Decimal('0.01'))])

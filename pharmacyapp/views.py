@@ -36,6 +36,9 @@ def post_new(request):
             form = PostForm(request.POST)
             if form.is_valid():
                 post = form.save(commit=False)
+                if post.pack == 0:
+                    messages.info(request,"Number of Tablets/Bottles to be greater than 0")
+                    return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                 try:
                     medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
                     medicineRecord.quantity = post.quantity+medicineRecord.quantity
@@ -80,6 +83,9 @@ def post_edit(request, pk):
     if request.method == "POST":
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
+            if post.pack == 0:
+                messages.info(request,"Number of Tablets/Bottles to be greater than 0")
+                return render(request, 'pharmacyapp/post_edit.html', {'form': form})
             post.pharmacy_user = request.user
             post.noOfTablets = (post.quantity+post.freeArticles)*post.pack
             post.pricePerTablet = post.mrp/post.pack
