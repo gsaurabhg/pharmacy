@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator
 from decimal import *
 
-Tax= ((0,0),(4,4),(12,12))
+Tax= ((0,0),(4,4),(5,5),(12,12))
 
 class Post(models.Model):
     pharmacy_user = models.ForeignKey('auth.User')
