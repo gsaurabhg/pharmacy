@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator
 from decimal import *
 
 Tax= ((0,0),(4,4),(5,5),(12,12))
-
+Tax_sat= ((0,0),(1,1),(4,4),(5,5),(12,12))
 class Post(models.Model):
     pharmacy_user = models.ForeignKey('auth.User')
     medicineName = models.CharField("Medicine Name",max_length=48,blank=False)
@@ -17,8 +17,8 @@ class Post(models.Model):
     netPurchasePrice = models.DecimalField(max_digits=8, decimal_places=2,validators=[MinValueValidator(Decimal('0.01'))])
     mrp = models.DecimalField(max_digits=8, decimal_places=2,validators=[MinValueValidator(Decimal('0.01'))])
     dateOfPurchase = models.DateField("Date Of Purchase",default=timezone.now)
-    vat = models.PositiveSmallIntegerField("Vat (%)",choices=Tax,default ='4')
-    sat = models.PositiveSmallIntegerField("Additional Vat (%)",choices=Tax,default ='0')
+    vat = models.PositiveSmallIntegerField("VAT (%)",choices=Tax,default ='4')
+    sat = models.PositiveSmallIntegerField("SAT (%)",choices=Tax_sat,default ='0')
     addTax = models.PositiveSmallIntegerField("Additional Taxes (%)",default ='0')
     noOfTablets = models.PositiveSmallIntegerField(default ='0')
     pricePerTablet = models.DecimalField(max_digits=8, decimal_places=2,default ='0.01',validators=[MinValueValidator(Decimal('0.01'))])
