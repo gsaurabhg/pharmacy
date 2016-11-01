@@ -45,7 +45,7 @@ def post_new(request):
                     medicineRecord.freeArticles = int(post.freeArticles)+medicineRecord.freeArticles
                     medicineRecord.noOfTablets = (medicineRecord.quantity+medicineRecord.freeArticles)*medicineRecord.pack
                     medicineRecord.noOfTabletsInStores = medicineRecord.noOfTablets - medicineRecord.noOfTabletsSold
-                    medicineRecord.netPurchasePrice = medicineRecord.quantity*medicineRecord.pricePerStrip*(1+Decimal(medicineRecord.vat1+medicineRecord.vat2+medicineRecord.addTax)/100)
+                    medicineRecord.netPurchasePrice = medicineRecord.quantity*medicineRecord.pricePerStrip*(1+Decimal(medicineRecord.vat+medicineRecord.sat+medicineRecord.addTax)/100)
                     medicineRecord.save()
                     return redirect('post_list')
                 except ObjectDoesNotExist:
@@ -65,7 +65,7 @@ def post_new(request):
                     post.noOfTablets = (int(post.quantity)+int(post.freeArticles))*int(post.pack)
                     post.pricePerTablet = post.mrp/post.pack
                     post.noOfTabletsInStores = int(post.noOfTablets) - int(post.noOfTabletsSold)
-                    post.netPurchasePrice = Decimal(post.quantity)*post.pricePerStrip*Decimal((100+post.vat1+post.vat2+post.addTax)/100)
+                    post.netPurchasePrice = Decimal(post.quantity)*post.pricePerStrip*Decimal((100+post.vat+post.sat+post.addTax)/100)
                     post.save()
                     return redirect('post_detail', pk=post.pk)
         else:
@@ -90,7 +90,7 @@ def post_edit(request, pk):
             post.noOfTablets = (post.quantity+post.freeArticles)*post.pack
             post.pricePerTablet = post.mrp/post.pack
             post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold
-            post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat1+post.vat2+post.addTax)/100)
+            post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat+post.sat+post.addTax)/100)
             webFormFields = request.POST
             try:
                 datetime.datetime.strptime(webFormFields['expiryDateForm'], '%d-%m-%Y')
