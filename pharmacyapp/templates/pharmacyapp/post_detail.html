@@ -10,24 +10,25 @@
 	{% endif %}
 
 	<table>
-		<caption><h1>Selected Medicine Details </h1></caption>
+		<caption><h1>Product Details </h1></caption>
 		<tr>
-			<th>Medicine Name</th>
-			<th>Batch No.</th>
-			<th>Expiry Date</th>
-			<th>Tablets per Strip</th>
-			<th>Strips Purchased</th>
-			<th>Price per Strip</th>
-			<th>Net Purchase Price</th>
-			<th>M.R.P.</th>
-			<th>Date of Purchase</th>
+			<th>Product Name</th>
+			<th>Batch No</th>
+			<th>Date of expiry</th>
+			<th>Tablets per strip/Units per pack</th>
+			<th>Strip/Pack purchased</th>
+			<th>Free sample(s)</th>
+			<th>Strip/Pack price</th>
 			<th>VAT (%)</th>
 			<th>SAT (%)</th>
 			<th>Add. Tax (%)</th>
-			<th>Tablets</th>
-			<th>Price Per Tablet</th>
-			<th>Tablets Sold</th>
-			<th>Tablets In Store</th>
+			<th>Net Purchase Price</th>
+			<th>M.R.P.</th>
+			<th>Date of purchase</th>
+			<th>Total Tablets/Units</th>
+			<th>Tablet/Unit price</th>
+			<th>Tablets/Units Sold</th>
+			<th>Remaining tablets/units in stock</th>
 		</tr>
 		<tr>
 			<td><a href="{% url 'post_detail' pk=post.pk %}">{{ post.medicineName }}</a></td>
@@ -35,13 +36,14 @@
 			<td>{{ post.expiryDate}}</td>
 			<td>{{ post.pack }}</td>
 			<td>{{ post.quantity}}</td>
+			<td>{{ post.freeArticles}}</td>
 			<td>{{ post.pricePerStrip}}</td>
-			<td>{{ post.netPurchasePrice}}</td>
-			<td>{{ post.mrp }}</td>
-			<td>{{ post.dateOfPurchase }}</td>
 			<td>{{ post.vat}}</td>
 			<td>{{ post.sat}}</td>
 			<td>{{ post.addTax}}</td>
+			<td>{{ post.netPurchasePrice}}</td>
+			<td>{{ post.mrp }}</td>
+			<td>{{ post.dateOfPurchase }}</td>
 			<td>{{ post.noOfTablets}}</td>
 			<td>{{ post.pricePerTablet}}</td>
 			<td>{{ post.noOfTabletsSold}}</td>
