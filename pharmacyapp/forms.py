@@ -8,7 +8,7 @@ class PostForm(forms.ModelForm):
         model = Post
         exclude = ['pharmacy_user','netPurchasePrice','noOfTablets','pricePerTablet','noOfTabletsSold','noOfTabletsInStores','expiryDate']
         widgets = {
-                'quantity' : forms.TextInput(    attrs   =  {'placeholder':'Enter the number of strips'}),
+                'quantity' : forms.TextInput(    attrs   =  {'placeholder':'Number of strips'}),
                 'mrp' : forms.TextInput(    attrs   =  {'placeholder':'Maximum Retail Price per strip'}),
         		'expiryDate' : forms.TextInput(    attrs   =  {'placeholder':'YYYY-MM-DD'})
         }

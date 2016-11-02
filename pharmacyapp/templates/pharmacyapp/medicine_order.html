@@ -9,20 +9,20 @@
 	</h2>
 	{% endif %}
 
-	<h1>Medicine Entry Form</h1>
+	<h1>Billing Information</h1>
 	<form method="POST" class="medicine-order">{% csrf_token %}
-		<a>Medicine Name</a>
-		<select name="medicineName" id="medicineName" onmousedown="this.value='';" onchange="get_batch_no(this.value);">
-			<option value="{{form.medicineName}}"></option>
-  		</select>
+		<p><a>Product Name</a></p>
+		<p><select name="medicineName" id="medicineName" onmousedown="this.value='';" onchange="get_batch_no(this.value);">
+			<option value="{{form.medicineName}}</option>
+  		</select></p>
 
-        <p><a>Quantity:</a> <a>{{form.orderQuantity}}</a></p>
+        <p><a>Quantity:</a></p> <p><a>{{form.orderQuantity}}</a></p>
 
-        <p><a>Batch Number:</a><select name="batchNo" id="batchNo" disabled="true">
+        <p><a>Batch Number:</a></p><p><select name="batchNo" id="batchNo" disabled="true">
         <option>Batch Number</option>
         </select></p>
 
-        <p><a>Discount:</a> <a>{{form.discount}}</a></p>
+        <p><a>Discount:</a></p> <p><a>{{form.discount}}</a></p>
 
         <button type="submit" class="save btn btn-default" name="addMed" value="addMed">Add</button>
         <button type="submit" class="save btn btn-default" name="order" value="order">Preview and Order</button>

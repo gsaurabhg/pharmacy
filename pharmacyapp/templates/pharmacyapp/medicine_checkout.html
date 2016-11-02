@@ -1,5 +1,4 @@
 {% extends 'pharmacyapp/base.html' %}
-
 {% block below_sideblock%}
 {% if billGeneration %}
     <div id="printarea">
@@ -9,7 +8,7 @@
     <a> Name: {{billGeneration.0.patientID.patientName}}</a></br>
     <a> Contact Details : {{billGeneration.0.patientID.patientPhoneNo}}</a></br>
 	<table id="cartMeds">
-		<caption><h1>Medicine Bill</h1></caption>
+		<caption><h1>Bill</h1></caption>
         <tbody>
 		<tr>
 			<th>Medicine Name</th>

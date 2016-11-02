@@ -9,12 +9,12 @@
 	</h2>
 	{% endif %}
 
-    <h1>Medicine Entry Form</h1>
+    <h1>Product Stock Entry</h1>
     <form method="POST" class="post-form">{% csrf_token %}
         <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
         <button type="submit" class="save btn btn-default" name="clear" value="clear">Clear</button>
         {{ form.as_p }}
-        <p>Pick Expiry Date: <input type="text" id="expiryDateForm" name="expiryDateForm" /></p>
+        <p>Expiry Date: <input type="text" id="expiryDateForm" name="expiryDateForm" /></p>
         <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
         <button type="submit" class="save btn btn-default" name="clear" value="clear">Clear</button>
     </form>

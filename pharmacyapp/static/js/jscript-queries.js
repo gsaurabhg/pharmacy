@@ -98,7 +98,7 @@ function get_batch_no(request_data)
 	var url = "/medicineName/" + request_data + "/get_batch_no";
 	var medicineName = request_data;
 	$.getJSON(url, function(medName){
-	var options = '<option value="Z">Select a BatchNo</option>';
+	var options = '<option></option>';
 	for (var i = 0; i < medName.length; i++) {
 	options += '<option value="' + medName[i].fields['batchNo'] + '">' + medName[i].fields['batchNo'] + '</option>';
 	}
@@ -199,12 +199,12 @@ function adjustQuantity(retMed,medPK,medOrdered,returnSalesNoOfTablets,returnSal
 				alert("Already Returned");
 			}
 		});
+		setTimeout(function(){ alert("Return Medicines"); }, 3000);
 		window.location.reload();
 		document.getElementById("returnQuantity").disabled = true;
 	}else {
 		window.alert("cancel");
 	}
-
 }
 
 

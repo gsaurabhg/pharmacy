@@ -1,7 +1,7 @@
 {% extends 'pharmacyapp/base.html' %}
 
 {% block sidenav_block %}
-	<h4>To add the new medicines in the Inventory</h4>
+	<h4>Add New Products in Stock</h4>
 	<a <button type="submit" class="save btn btn-default" href="{% url 'post_new' %}">Add</button></a>
 {% endblock %}
 
@@ -18,16 +18,13 @@
 
 	</body>
 	<table>
-		<caption><h1>List of Medicines in Pharmacy</h1></caption>
+		<caption><h1>Products in Stock</h1></caption>
 		<tr>
-			<th>Medicine Name</th>
-			<th>Batch No.</th>
-			<th>Expiry Date</th>
-			<th>Date of Purchase</th>
-			<th>Tablets</th>
-			<th>Price Per Tablet</th>
-			<th>Tablets Sold</th>
-			<th>Tablets In Store</th>
+			<th>Product Name</th>
+			<th>Batch No</th>
+			<th>Date of Expiry</th>
+			<th>Unit Price</th>
+			<th>Remaining units/tablets in stock</th>
 		</tr>
 		{% for post in posts %}
 		<tr>
@@ -38,10 +35,7 @@
 			{% endif %}
 			<td>{{ post.batchNo }}</td>
 			<td>{{ post.expiryDate}}</td>
-			<td>{{ post.dateOfPurchase }}</td>
-			<td>{{ post.noOfTablets}}</td>
 			<td>{{ post.pricePerTablet}}</td>
-			<td>{{ post.noOfTabletsSold}}</td>
 			<td>{{ post.noOfTabletsInStores}}</td>
 		</tr>
 		{% endfor %}

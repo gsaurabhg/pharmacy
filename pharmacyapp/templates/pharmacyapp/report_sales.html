@@ -4,14 +4,15 @@
 {% block sidenav_block %}
 
 		<form method="POST" class="report">{% csrf_token %}
+		<h3>Quick Sales Report</h3>
 		<p><button type="submit" class="report btn btn-default" name="Today" value="Today">Today's Sale</button>
 		<button type="submit" class="report btn btn-default" name="Yesterday" value="Yesterday">Yesterday's Sale</button></p>
-		<p> ===========================</p>
-		<h3>Custom Search</h3>
-		<p>Pick a start Date: <input type="text" id="startDate" name="startDate" /></p>
-		<p>Pick a end Date: <input type="text" id="endDate" name="endDate" /></p>
+		<p> =================================</p>
+		<h3>Time Frame Sales Report</h3>
+		<p>Start Date: <input type="text" id="startDate" name="startDate" /></p>
+		<p>End Date: <input type="text" id="endDate" name="endDate" /></p>
 		<button type="submit" class="report btn btn-default" name="custom" value="custom">Search</button>
-		<p> ===========================</p>
+
 		</form>
 
 	{% if messages %}
@@ -28,13 +29,13 @@
 
 		<div id="printarea">
 		<table id="daysales">
-		<caption><h1>List of Medicines Sold on Enquired date</h1></caption>
+		<caption><h1>Sales Report</h1></caption>
 		<tbody>
 		<tr>
-			<th>Bil Date</th>
-			<th>Medicine Name</th>
+			<th>Bill Date</th>
+			<th>Product Name</th>
 			<th>Batch Number</th>
-			<th>Quantity Sold</th>
+			<th>Unit Sold</th>
 			<th>Price</th>
 		</tr>
 		{% for report in reports%}
