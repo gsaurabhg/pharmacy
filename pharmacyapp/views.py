@@ -286,7 +286,6 @@ def report_sales(request):
 def get_batch_no(request, medName):
     medName=medName.replace("-_____-"," ")
     current_meds = Post.objects.all().filter(medicineName=medName)
-    messages.info(request,current_meds)
     json_models = serializers.serialize("json", current_meds)
     return HttpResponse(json_models, content_type="application/javascript")
 
