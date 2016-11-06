@@ -33,6 +33,7 @@
 		<tbody>
 		<tr>
 			<th>Bill Date</th>
+			<th>Bill Number</th>
 			<th>Product Name</th>
 			<th>Batch Number</th>
 			<th>Unit Sold</th>
@@ -41,6 +42,7 @@
 		{% for report in reports%}
 		<tr>
 			<td>{{ report.billDate }}</td>
+			<td>{{ report.billNo }}</td>
 			<td>{{ report.medicineName }}</td>
 			<td>{{ report.batchNo}}</td>
 			<td>{{ report.noOfTabletsOrdered}}</td>
@@ -49,6 +51,7 @@
 		{% endfor %}
 		<tr>
 		    <th> Total Sales</th>
+		    <th></th>
 		    <th></th>
 		    <th></th>
 		    <th></th>
@@ -65,7 +68,7 @@
 
 
 {% if reports %}
-    <body onload="finishTable_v1(4);">
+    <body onload="finishTable_v1(5);">
     <script type="text/javascript" src="/static/js/jscript-queries.js"></script>
     </body>
 {% endif %}

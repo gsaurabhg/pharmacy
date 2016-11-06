@@ -258,12 +258,12 @@ def report_sales(request):
     if (request.method == "POST" and request.POST.get('Today')):
         startdate = date.today()
         enddate = startdate+timedelta(days=0)
-        reports= Bill.objects.filter(billDate__range=[startdate, enddate],transactionCompleted__exact = 'Y').order_by('medicineName')
+        reports= Bill.objects.filter(billDate__range=[startdate, enddate],transactionCompleted__exact = 'Y').order_by('billNo')
         return render(request, 'pharmacyapp/report_sales.html', {'reports': reports})
     elif(request.method == "POST" and request.POST.get('Yesterday')):
         startdate = date.today()-timedelta(days=1)
         enddate = startdate+timedelta(days=0)
-        reports= Bill.objects.filter(billDate__range=[startdate, enddate],transactionCompleted__exact = 'Y')
+        reports= Bill.objects.filter(billDate__range=[startdate, enddate],transactionCompleted__exact = 'Y').order_by('billNo')
         return render(request, 'pharmacyapp/report_sales.html', {'reports': reports})
     elif(request.method == "POST" and request.POST.get('custom')):
         webFormFields = request.POST
@@ -274,7 +274,7 @@ def report_sales(request):
                 if enddate < startdate:
                     messages.info(request,"End date can not be earlier than start date")
                     return render(request, 'pharmacyapp/report_sales.html', {'form': form})
-                reports= Bill.objects.filter(billDate__range=[startdate, enddate],transactionCompleted__exact = 'Y')
+                reports= Bill.objects.filter(billDate__range=[startdate, enddate],transactionCompleted__exact = 'Y').order_by('billNo')
                 return render(request, 'pharmacyapp/report_sales.html', {'reports': reports})
             else:
                 messages.info(request,"Enter the dates")
