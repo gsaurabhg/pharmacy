@@ -1,6 +1,6 @@
 {% extends 'pharmacyapp/base.html' %}
 
-{% block below_sideblock%}
+{% block body_block%}
 
 {% if messages %}
 <h2 class="messages">
@@ -11,16 +11,16 @@
 {% endif %}
 
 
-{{ form.as_table }}
 {% if billDet %}
     <div id="printarea">
+    <caption><h1>Sri Sai Drug Store</h1></caption>
+    <h1>Medicine Bill - Return Sales</h1>
     <a> Bill No: {{billDet.0.billNo}}</a></br>
     <a> Bill Date: {{billDet.0.billDate}}</a></br>
     <a> ID : {{billDet.0.patientID.patientID}}</a></br>
     <a> Name: {{billDet.0.patientID.patientName}}</a></br>
     <a> Contact Details : {{billDet.0.patientID.patientPhoneNo}}</a></br>
 	<table id="cartMeds">
-		<caption><h1>Medicine Bill - Return Sales</h1></caption>
         <tbody>
 		<tr>
 			<th>Product Name</th>
@@ -49,12 +49,12 @@
 				onchange = "adjustQuantity(this.value,{{billDetail.pk}},{{ billDetail.noOfTabletsOrdered }},
 				{{ billDetail.returnSalesNoOfTablets }},'{{billDetail.returnSales}}','{{ billDetail.expiryDate}}')"/></td>
 			<td>{{ billDetail.returnDiscountedPrice}}
-			<td><a <button type="submit" class="save btn btn-default">Return Tablets</button></a></td>
+			<td class=hidden-print><a <button type="submit" class="save btn btn-default">Return Tablets</button></a></td>
 
 		</tr>
 		{% endfor %}
 		<tr>
-		    <th> Total Amount To be returned</th>
+		    <th> Total Refund</th>
 		    <th></th>
 		    <th></th>
 		    <th></th>

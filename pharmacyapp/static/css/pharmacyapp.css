@@ -115,4 +115,27 @@ body {
     font-size: 200pt;
     }
     
-
+@media print {
+    .hidden-print {
+      display: none;
+    }
+    @page {
+      size: A4;
+      margin-left: 0cm;
+      margin-bottom: 15cm;
+      margin-top: 0cm;
+    }
+    table, td, th {
+        margin-top: 10;
+        border: 1px none black;
+        font-size: 8pt;
+        background-color: white;
+        color: black;
+    }
+    h1, h3 {
+        font-size:12pt;
+    }
+    header, footer {
+        display: none;
+    }
+}
