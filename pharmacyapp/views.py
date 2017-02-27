@@ -239,6 +239,13 @@ def medicine_checkout(request, pk):
         recordToBeUpdatedInPostModel.save()
         recordToBeUpdatedInBillModel.save()
     return render(request, 'pharmacyapp/medicine_checkout.html', {'billGeneration': billGeneration})
+
+@login_required    
+def medicine_last_checkout(request, pk):
+    patientInfo = get_object_or_404(PatientDetail, pk=pk)
+    billGeneration = Bill.objects.all().filter(patientID__patientID__exact = patientInfo.patientID,transactionCompleted__exact = 'Y').latest('pk')
+    billGeneration = Bill.objects.all().filter(billNo__exact = billGeneration.billNo,transactionCompleted__exact = 'Y')
+    return render(request, 'pharmacyapp/medicine_checkout.html', {'billGeneration': billGeneration})
     
 @login_required  
 def medicine_remove(request, pk):

@@ -11,6 +11,7 @@
 			<th>Phone Number</th>
 			<th>Add Medicines</th>
 			<th>Medicines in Cart</th>
+			<th>Last Bill</th>
 		</tr>
 		{% for patientDetail in patientRecord %}
 		<tr>
@@ -19,6 +20,7 @@
 			<td>{{ patientDetail.patientPhoneNo}}</td>
 			<td><a <button type="submit" class="save btn btn-default" href="{% url 'medicine_order' pk=patientDetail.pk %}">Add</button></a></td>
 			<td><a <button type="submit" class="save btn btn-default" href="{% url 'bill_details' pk=patientDetail.pk %}" name="order" value="order">Order Preview</button></a></td>
+			<td><a <button type="submit" class="save btn btn-default" href="{% url 'medicine_last_checkout' pk=patientDetail.pk %}" name="previousBill" value="previousBill">Previous Bill</button></a></td>
 		</tr>
 		{% endfor %}
 		</table>
