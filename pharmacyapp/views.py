@@ -313,8 +313,39 @@ def medicine_adjust(request, retMed, medPK):
     medsAdjust.noOfTabletsInStores = medsAdjust.noOfTabletsInStores + int(retMed)
     medsAdjust.save()
     return render(request, 'pharmacyapp/medicine_adjust.html', {'billAdjust': billAdjust})
-    
-    
+
+@login_required
+def meds_edit(request, pk):
+    billAdjust = Bill.objects.filter(pk__in=pk).get()
+    billDet = Bill.objects.filter(billNo__exact=billAdjust.billNo)
+    if request.POST.get('returnMeds'):
+        webFormFields = request.POST
+        meds2Return = webFormFields['meds2Return']
+        if billAdjust.returnSales == "Y" :
+            messages.info(request,"Medicine already returned. No more allowed")
+            return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
+        if int(meds2Return) > billAdjust.noOfTabletsOrdered:
+            messages.info(request,"You are returning medicines more than you bought!! Pls check")
+            return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
+        if format(billAdjust.expiryDate,'%Y-%m-%d') < format(timezone.now(),'%Y-%m-%d'):
+            messages.info(request,"You are returning medicines after its expired!! Pls check")
+            return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
+        billAdjust.returnSalesNoOfTablets  = int(meds2Return)
+        billAdjust.returnSalesBillDate = timezone.now()
+        billAdjust.returnDiscountedPrice = Decimal(meds2Return)*billAdjust.pricePerTablet*Decimal(1-billAdjust.discount/100)
+        billAdjust.returnSales = 'Y'
+        billAdjust.save()
+        medsAdjust = Post.objects.all().filter(medicineName__exact = billAdjust.medicineName,batchNo__exact = billAdjust.batchNo).get()
+        medsAdjust.noOfTabletsSold = medsAdjust.noOfTabletsSold - int(meds2Return)
+        medsAdjust.noOfTabletsInStores = medsAdjust.noOfTabletsInStores + int(meds2Return)
+        medsAdjust.save()
+        billDet = Bill.objects.filter(billNo__exact=billAdjust.billNo)
+        return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
+    elif request.POST.get('back'):
+        return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
+    return render(request, 'pharmacyapp/meds_edit.html', {'billAdjust': billAdjust})
+
+   
 def report_returns(request):
     form = reportForm(request.POST)
     if (request.method == "POST" and request.POST.get('Today')):

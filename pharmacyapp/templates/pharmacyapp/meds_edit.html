@@ -1,0 +1,29 @@
+{% extends 'pharmacyapp/base.html' %}
+
+{% block body_block %}
+	{% if messages %}
+	<h2 class="messages">
+		{% for message in messages %}
+		<a{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</a>
+		{% endfor %}
+	</h2>
+	{% endif %}
+
+    <h1>Medicine Return Entry</h1>
+    <form method="POST" class="post-form">{% csrf_token %}
+    	<table>
+			<tr><td>Product Name</td><td>{{billAdjust.medicineName }}</td></tr>
+			<tr><td>Batch No</td><td>{{billAdjust.batchNo}}</td></tr>
+			<tr><td>Date Of Expiry</td><td>{{billAdjust.expiryDate}}</td></tr>
+			<tr><td>Tablet/Unit Price</td><td>{{billAdjust.pricePerTablet}}</td></tr>
+			<tr><td>Quantity Ordered</td><td>{{billAdjust.noOfTabletsOrdered}}</td></tr>
+			<tr><td>Price</td><td>{{billAdjust.totalPrice}}</td></tr>
+			<tr><td>Discount</td><td>{{billAdjust.discount}}</td></tr>
+			<tr><td>Price After Discount</td><td>{{billAdjust.discountedPrice}}</td></tr>
+		</table>
+        <p>Total Meds To Return : <input type="number" id="meds2Return" name="meds2Return" min="1" /></p>
+        <button type="submit" class="return btn btn-default" name="returnMeds" value="returnMeds">Return Medicines</button>
+        <button type="submit" class="back btn btn-default" name="back" value="back">Back</button>
+    </form>
+{% endblock body_block%}
+

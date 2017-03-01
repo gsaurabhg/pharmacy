@@ -31,7 +31,7 @@
 			<th>Price</th>
 			<th>Discount %</th>
 			<th>Price After Discount</th>
-			<th>Total Meds to Return</th>
+			<th>Total Meds Return</th>
 			<th>Total returnable Price</th>
 			<th></th>
 		</tr>
@@ -45,11 +45,9 @@
 			<td>{{ billDetail.totalPrice }}</td>
 			<td>{{ billDetail.discount }}</td>
 			<td>{{ billDetail.discountedPrice }}</td>
-			<td> Total Meds return: {{ billDetail.returnSalesNoOfTablets }} <input type="text" id="returnQuantity" name="returnQuantity"
-				onchange = "adjustQuantity(this.value,{{billDetail.pk}},{{ billDetail.noOfTabletsOrdered }},
-				{{ billDetail.returnSalesNoOfTablets }},'{{billDetail.returnSales}}','{{ billDetail.expiryDate}}')"/></td>
+			<td> {{ billDetail.returnSalesNoOfTablets }} </td>
 			<td>{{ billDetail.returnDiscountedPrice}}
-			<td class=hidden-print><a <button type="submit" class="save btn btn-default">Return Tablets</button></a></td>
+			<td class=hidden-print><a <button type="submit" class="save btn btn-default" href="{% url 'meds_edit' pk=billDetail.pk %}">Return Tablets</button></a></td>
 
 		</tr>
 		{% endfor %}
