@@ -316,7 +316,7 @@ def medicine_adjust(request, retMed, medPK):
 
 @login_required
 def meds_edit(request, pk):
-    billAdjust = Bill.objects.filter(pk__in=pk).get()
+    billAdjust = Bill.objects.filter(pk__exact=pk).get()
     billDet = Bill.objects.filter(billNo__exact=billAdjust.billNo)
     if request.POST.get('returnMeds'):
         webFormFields = request.POST
