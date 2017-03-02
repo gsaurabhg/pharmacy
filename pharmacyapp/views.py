@@ -151,7 +151,7 @@ def bill_details(request, pk):
     record = get_object_or_404(PatientDetail, pk=pk)
     billGeneration = Bill.objects.all().filter(patientID__patientID__exact = record.patientID,transactionCompleted__exact = 'N')
     if len(billGeneration) == 0:
-        messages.info(request, "Nothing in Cart")            
+        messages.info(request, "Pls check !! Nothing in Cart")            
         return render(request, 'pharmacyapp/bill_details.html', {'record': record})
     else:
         return render(request, 'pharmacyapp/sideNavigation.html',{'billGeneration': billGeneration})
@@ -255,7 +255,6 @@ def medicine_remove(request, pk):
     if billGeneration :
         return render(request, 'pharmacyapp/sideNavigation.html',{'billGeneration': billGeneration})
     else:
-        messages.info(request,"Nothing in Cart")
         patientDetail = PatientDetail.objects.all().filter(patientID__exact = billInfo.patientID.patientID).get()
         return redirect('bill_details', pk=patientDetail.pk)
     
@@ -296,23 +295,6 @@ def get_batch_no(request, medName):
     json_models = serializers.serialize("json", current_meds)
     return HttpResponse(json_models, content_type="application/javascript")
 
-@login_required  
-def medicine_adjust(request, retMed, medPK):
-    billAdjust = get_object_or_404(Bill, pk=medPK)
-    if billAdjust.returnSales == "Y" :
-        medRetOrNot = 'Y' 
-        json_models = serializers.serialize("json", medRetOrNot)
-        return HttpResponse(json_models, content_type="application/javascript")
-    billAdjust.returnSalesNoOfTablets  = retMed
-    billAdjust.returnSalesBillDate = timezone.now()
-    billAdjust.returnDiscountedPrice = Decimal(retMed)*billAdjust.pricePerTablet*Decimal(1-billAdjust.discount/100)
-    billAdjust.returnSales = 'Y'
-    billAdjust.save()
-    medsAdjust = Post.objects.all().filter(medicineName__exact = billAdjust.medicineName,batchNo__exact = billAdjust.batchNo).get()
-    medsAdjust.noOfTabletsSold = medsAdjust.noOfTabletsSold - int(retMed)
-    medsAdjust.noOfTabletsInStores = medsAdjust.noOfTabletsInStores + int(retMed)
-    medsAdjust.save()
-    return render(request, 'pharmacyapp/medicine_adjust.html', {'billAdjust': billAdjust})
 
 @login_required
 def meds_edit(request, pk):

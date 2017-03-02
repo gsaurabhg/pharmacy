@@ -1,4 +1,4 @@
-{% extends 'pharmacyapp/base.html' %}
+{% extends 'pharmacyapp/base_extends.html' %}
 
 {% block sidenav_block %}
 {% if billGeneration %}
@@ -10,7 +10,7 @@
 {% endif %}
 {% endblock %}
 
-{% block below_sideblock%}
+{% block body_block %}
 	{% if messages %}
 	<h2 class="messages">
 		{% for message in messages %}

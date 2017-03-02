@@ -81,9 +81,10 @@ function printDiv(divName) {
 function finishTable_v1(colNo)
 {
   var totalPrice = computeTableColumnTotal("daysales",colNo);
+  var totalPriceRounded = Math.round(totalPrice*100)/100;
   try
   {
-    window.document.getElementById("TPP").innerHTML = totalPrice;
+    window.document.getElementById("TPP").innerHTML = totalPriceRounded;
   }
   catch (ex)
   {
@@ -158,55 +159,6 @@ $(document).ready(function() {
     }
   });
 });
-
-
-function adjustQuantity(retMed,medPK,medOrdered,returnSalesNoOfTablets,returnSales,expiryDate)
-{
-	if (isNaN(retMed) || isNaN(medPK) || retMed =="" || retMed == 0 )
-	{
-		alert("Must Input Numbers");
-		return;
-	}
-	if (retMed > medOrdered )
-	{
-		document.getElementById("returnQuantity").disabled = true;
-		alert("Return invoice is more than purchases")
-		return;
-	}
-	var dateToday = new Date();
-	var m = dateToday.getMonth()+1;
-	var y = dateToday.getFullYear();
-	var ex = new Date(expiryDate);
-	var me = ex.getMonth()+1;
-	var ye = ex.getFullYear();
-
-	if (dateToday > ex)
-	{
-		document.getElementById("returnQuantity").disabled = true;
-		alert("Expired");
-		return;
-	}
-	if ((returnSales == "Y" ) || (returnSalesNoOfTablets > 0 ))
-	{
-		document.getElementById("returnQuantity").disabled = true;
-		alert("Already Returned")
-		return;
-	}
-    if (window.confirm("Are you sure you want to return "+ retMed + " medicines") == true) {
-		var url = "/bill" + "/details/" + retMed + "/" + medPK;
-		$.getJSON(url, function(retMedOrNot){
-			if(retMedOrNot == "Y"){
-				alert("Already Returned");
-			}
-		});
-		setTimeout(function(){ alert("Return Medicines"); }, 3000);
-		window.location.reload();
-		document.getElementById("returnQuantity").disabled = true;
-	}else {
-		window.alert("cancel");
-	}
-}
-
 
 
 function printReturnInvoice(divName) {

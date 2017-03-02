@@ -18,6 +18,5 @@ urlpatterns = [
     url(r'^medicineName/details/(?P<pk>\d+)/remove/$', views.medicine_remove, name='medicine_remove'),
     url(r'^medicineName/(?P<medName>[-\w]+)/get_batch_no/$', views.get_batch_no,name='get_batch_no'),
     url(r'^medicineName/(?P<medName>[^"]*)/get_batch_no/$', views.get_batch_no,name='get_batch_no'),
-    url(r'^bill/details/(?P<retMed>\d+)/(?P<medPK>\d+)/$', views.medicine_adjust, name='medicine_adjust'),
     url(r'^bill/details/(?P<pk>\d+)/$', views.meds_edit, name='meds_edit'),
 ]
