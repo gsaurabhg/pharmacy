@@ -12,7 +12,6 @@
     <h1>Product Stock Entry</h1>
     <form method="POST" class="post-form">{% csrf_token %}
         <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
-        <button type="submit" class="save btn btn-default" name="clear" value="clear">Clear</button>
         {{ form.as_p }}
 		<style>
 		.ui-datepicker-calendar {
@@ -21,7 +20,6 @@
 		</style>
         <p>Expiry Date: <input type="text" id="expiryDateForm" name="expiryDateForm" class="date-picker" /></p></br></br>
         <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
-        <button type="submit" class="save btn btn-default" name="clear" value="clear">Clear</button>
     </form>
 {% endblock body_block%}
 
