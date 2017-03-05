@@ -31,11 +31,16 @@ def post_detail(request, pk):
 @login_required    
 def post_new(request):
     current_user = request.user.username
+    currentDate = datetime.datetime.strptime(str(format(timezone.now(), '%d-%m-%Y')),"%d-%m-%Y") 
     if (current_user == "admin" or current_user == "saurabhg"):
         if (request.method == "POST" and request.POST.get('save')):
             form = PostForm(request.POST)
             if form.is_valid():
                 post = form.save(commit=False)
+                enteredDate = datetime.datetime.strptime(str(format(post.dateOfPurchase, '%d-%m-%Y')),"%d-%m-%Y") 
+                if ( enteredDate > currentDate):
+                    messages.info(request,"Purchase Date " + format(post.dateOfPurchase, '%d-%m-%Y') + " can not be greater than Todays date i.e., " + format(timezone.now(), '%d-%m-%Y'))
+                    return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                 if post.pack == 0:
                     messages.info(request,"Number of Tablets/Bottles to be greater than 0")
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
@@ -49,7 +54,7 @@ def post_new(request):
                     medicineRecord.save()
                     return redirect('post_list')
                 except ObjectDoesNotExist:
-                    currentDate = format(timezone.now(),'%Y-%m-%d')
+                    currentDate = datetime.datetime.strptime(str(format(timezone.now(), '%d-%m-%Y')),"%d-%m-%Y") 
                     webFormFields = request.POST
                     try:
                             datetime.datetime.strptime(webFormFields['expiryDateForm'], '%d-%m-%Y')
@@ -57,7 +62,7 @@ def post_new(request):
                             messages.info(request,"Expiry Date to be in DD-MM-YYY format")
                             return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                     post.expiryDate = datetime.datetime.strptime(webFormFields['expiryDateForm'],'%d-%m-%Y')
-                    enteredDate = format(post.expiryDate,'%Y-%m-%d')
+                    enteredDate = post.expiryDate
                     if enteredDate < currentDate:
                         messages.info(request,"enter the proper expiry Date")
                         return render(request, 'pharmacyapp/post_edit.html', {'form': form})
@@ -86,6 +91,11 @@ def post_edit(request, pk):
             if post.pack == 0:
                 messages.info(request,"Number of Tablets/Bottles to be greater than 0")
                 return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+            currentDate = datetime.datetime.strptime(str(format(timezone.now(), '%d-%m-%Y')),"%d-%m-%Y") 
+            enteredDate = datetime.datetime.strptime(str(format(post.dateOfPurchase, '%d-%m-%Y')),"%d-%m-%Y") 
+            if ( enteredDate > currentDate):
+                messages.info(request,"Purchase Date " + format(post.dateOfPurchase, '%d-%m-%Y') + " can not be greater than Todays date i.e., " + format(timezone.now(), '%d-%m-%Y'))
+                return render(request, 'pharmacyapp/post_edit.html', {'form': form})
             post.pharmacy_user = request.user
             post.noOfTablets = (post.quantity+post.freeArticles)*post.pack
             post.pricePerTablet = post.mrp/post.pack
@@ -97,7 +107,12 @@ def post_edit(request, pk):
             except ValueError:
                 messages.info(request,"Expiry Date to be in DD-MM-YYY format")
                 return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+                
             post.expiryDate = datetime.datetime.strptime(webFormFields['expiryDateForm'],'%d-%m-%Y')
+            enteredDate = post.expiryDate
+            if enteredDate < currentDate:
+                messages.info(request,"enter the proper expiry Date")
+                return render(request, 'pharmacyapp/post_edit.html', {'form': form})
             post.save()
             return redirect('post_list')
     else:

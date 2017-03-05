@@ -127,20 +127,20 @@ $(document).ready( function() {
     });
   });
 
-$(document).ready( function() {
-    $( "#expiryDateForm" ).datepicker({
-      changeMonth: true,//this option for allowing user to select month
-      changeYear: true, //this option for allowing user to select from year range
-      dateFormat : 'dd-mm-yy',
-      showButtonPanel: true,
-    });
-  });
+$.datepicker.setDefaults({
+  showOn: "both",
+  showOptions: { direction: "up" },
+  buttonText: "Calendar",
+  showAnim: "fold",
+  showButtonPanel: true,
+  todayBtn: true
+});
 
 $(document).ready(function() {
-   $('#expiryDate').datepicker({
+   $('#expiryDateForm').datepicker({
      changeMonth: true,
      changeYear: true,
-     dateFormat: 'mm-yy',
+     dateFormat: 'dd-mm-yy',
 
      onClose: function() {
         var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
@@ -154,12 +154,11 @@ $(document).ready(function() {
           iYear = selDate.substring(selDate.length - 4, selDate.length);
           iMonth = jQuery.inArray(selDate.substring(0, selDate.length - 5), $(this).datepicker('option', 'monthNames'));
           $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
-           $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+          $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
        }
     }
   });
 });
-
 
 function printReturnInvoice(divName) {
      var printContents = document.getElementById(divName).innerHTML;

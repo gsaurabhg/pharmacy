@@ -14,7 +14,12 @@
         <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
         <button type="submit" class="save btn btn-default" name="clear" value="clear">Clear</button>
         {{ form.as_p }}
-        <p>Expiry Date: <input type="text" id="expiryDateForm" name="expiryDateForm" /></p>
+		<style>
+		.ui-datepicker-calendar {
+			display: none;
+			}
+		</style>
+        <p>Expiry Date: <input type="text" id="expiryDateForm" name="expiryDateForm" class="date-picker" /></p></br></br>
         <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
         <button type="submit" class="save btn btn-default" name="clear" value="clear">Clear</button>
     </form>
