@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_windows_tools',
     'pharmacyapp',
+    'dbbackup',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -127,3 +128,6 @@ DATE_INPUT_FORMATS = ('%d-%m-%Y',)
 USE_L10N = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 100000
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'dbbackup')
+DBBACKUP_FILESYSTEM_DIRECTORY = {'location': MEDIA_ROOT}
