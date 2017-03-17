@@ -146,7 +146,7 @@ def patient_details(request):
                 messages.info(request, "Patient Details already exists! Click Search Button")
                 return render(request, 'pharmacyapp/patient_details.html', {'form': form})
             patientDetail = form.save(commit=False)
-            patientDetail.patientID = 'AMC00'+str(PatientDetail.objects.count())
+            patientDetail.patientID = 'MHM00'+str(PatientDetail.objects.count())
             patientDetail.save()
             return redirect('bill_details', pk=patientDetail.pk)
             #####MAKE THE BILL FORM IN 2 FRAMES
