@@ -19,6 +19,9 @@ h1, h3, h4 {
     font-style: italic;
 }
 
+h3.newClass {
+	text-align: center;
+	}
 h2 {
     font-family: 'verdana';
     font-style: bold;
