@@ -2,15 +2,14 @@
 {% block body_block%}
 {% if billGeneration %}
     <div id="printarea">
-    <caption><h1>M H Medical Store</h1></caption>
-    <a><b>4/204-A Firdaus Nagar,</b></a>
-    <a><b>Qila Road, Aligarh</b></a>
-	<h1>Bill Detail</h1>
+    <caption><h1 class="storeTitle">M H Medical Store</h1></caption>
+    <h6 class="addressClass">4/204-A Firdaus Nagar,</h6>
+    <h6 class="addressClass">Qila Road, Aligarh</h6>
     <a> Bill No: {{billGeneration.0.billNo}}</a></br>
     <a> Bill Date: {{billGeneration.0.billDate}}</a></br>
     <a> ID : {{billGeneration.0.patientID.patientID}}</a></br>
     <a> Name: {{billGeneration.0.patientID.patientName}}</a></br>
-    <a> Contact Details : {{billGeneration.0.patientID.patientPhoneNo}}</a></br>
+    <a> Contact Details : {{billGeneration.0.patientID.patientPhoneNo}}</a>
 	<table id="cartMeds">
         <tbody>
 		<tr>

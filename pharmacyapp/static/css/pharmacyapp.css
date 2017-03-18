@@ -22,6 +22,16 @@ h1, h3, h4 {
 h3.newClass {
 	text-align: center;
 	}
+h1.storeTitle {
+	text-align: center;
+	color: green;
+	}
+h6.addressClass {
+	text-align: center;
+	font-size: 12pt;
+	font-style: italic bold;
+	color: green;
+	}
 h2 {
     font-family: 'verdana';
     font-style: bold;
@@ -134,9 +144,17 @@ body {
         font-size: 8pt;
         background-color: white;
         color: black;
+        border-style:none none solid none;
     }
-    h1, h3 {
-        font-size:12pt;
+    h1.storeTitle {
+    	font-size:12pt;
+    	color: black;
+        line-height: 2px;
+    }
+    h6.addressClass {
+        font-size:8pt;
+        color: black;
+        line-height: 2px;
     }
     header, footer {
         display: none;
