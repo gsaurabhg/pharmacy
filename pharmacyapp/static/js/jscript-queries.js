@@ -37,8 +37,10 @@ function computeTableColumnTotal(tableId, colNumber)
 
 function finishTable()
 {
-  var totalPrice = computeTableColumnTotal("cartMeds",5);
-  var totalDiscountedPrice = computeTableColumnTotal("cartMeds",7);
+  var totalPrice1 = computeTableColumnTotal("cartMeds",5);
+  var totalPrice = Math.round(totalPrice1*100)/100;
+  var totalDiscountedPriceUnrounded = computeTableColumnTotal("cartMeds",7);
+  var totalDiscountedPrice = Math.round(totalDiscountedPriceUnrounded*100)/100;
   try
   {
     window.document.getElementById("TP").innerHTML = totalPrice;
