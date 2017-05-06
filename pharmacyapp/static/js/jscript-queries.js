@@ -69,14 +69,21 @@ function finishTable_retMeds()
 
 
 function printDiv(divName) {
-     var printContents = document.getElementById(divName).innerHTML;
-     var originalContents = document.body.innerHTML;
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
 
-     document.body.innerHTML = printContents;
+	if (divName === "printarea_estimate")
+	{
+		document.body.innerHTML = '<h1 class="storeTitle">Estimates</h1>' + printContents;
+	}
+	else
+	{
+		document.body.innerHTML = printContents;
+	}
 
-     window.print();
+    window.print();
 
-     document.body.innerHTML = originalContents;
+    document.body.innerHTML = originalContents;
 }
 
 
@@ -166,7 +173,14 @@ function printReturnInvoice(divName) {
      var printContents = document.getElementById(divName).innerHTML;
      var originalContents = document.body.innerHTML;
 
-     document.body.innerHTML = printContents;
+	if (divName === "printarea_estimate")
+	{
+		document.body.innerHTML = '<h1 class="storeTitle">Estimates</h1>' + printContents;
+	}
+	else
+	{
+		document.body.innerHTML = printContents;
+	}
 
      window.print();
 

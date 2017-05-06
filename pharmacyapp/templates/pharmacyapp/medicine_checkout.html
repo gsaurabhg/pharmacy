@@ -5,8 +5,9 @@
     <caption><h1 class="storeTitle">M H Medical Store</h1></caption>
     <h6 class="addressClass">4/204-A Firdaus Nagar,</h6>
     <h6 class="addressClass">Qila Road, Aligarh</h6>
-    <a> Bill No: {{billGeneration.0.billNo}}</a></br>
-    <a> Bill Date: {{billGeneration.0.billDate}}</a></br>
+    <div id="printarea_estimate">
+    <a> No: {{billGeneration.0.billNo}}</a></br>
+    <a> Date: {{billGeneration.0.billDate}}</a></br>
     <a> ID : {{billGeneration.0.patientID.patientID}}</a></br>
     <a> Name: {{billGeneration.0.patientID.patientName}}</a></br>
     <a> Contact Details : {{billGeneration.0.patientID.patientPhoneNo}}</a>
@@ -46,10 +47,12 @@
 		</tr>
         </tbody>
     </table>
+	</div>
     </div>
     {% if user.is_authenticated %}
     <script type="text/javascript" src="/static/js/jscript-queries.js"></script>
-    <input type="button" onclick="printDiv('printarea')" value="Print" />
+    <input type="button" onclick="printDiv('printarea')" value="Print Bill" />
+	<input type="button" onclick="printDiv('printarea_estimate')" value="Print Estimate" />
     <a <button type="submit" class="save btn btn-default" href="/">Home</button></a>
     {% endif %}
 {% else %}
