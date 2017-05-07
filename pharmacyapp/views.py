@@ -46,6 +46,8 @@ def post_new(request):
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                 try:
                     medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
+                    "this section is basically if a person is entering more medicines for the same batch no. via new entry"
+                    messages.info(request,"Found existing record in the stocks. Updating it")
                     medicineRecord.quantity = post.quantity+medicineRecord.quantity
                     medicineRecord.freeArticles = int(post.freeArticles)+medicineRecord.freeArticles
                     medicineRecord.noOfTablets = (medicineRecord.quantity+medicineRecord.freeArticles)*medicineRecord.pack
@@ -176,13 +178,16 @@ def bill_details(request, pk):
 @login_required    
 def medicine_order(request, pk):
     patientDetails = get_object_or_404(PatientDetail, pk=pk)
-    availableMeds = Post.objects.filter(noOfTabletsInStores__gt = 0).values()
+    availableMeds = Post.objects.filter(noOfTabletsToTrf__gt = 0).values()
     medicineNameChoices = []
     for med in availableMeds:
         medicineNameChoices.append((med['medicineName'], med['medicineName']),)
     form = availableMedsForm(medicineNameChoices)
     if (request.method == "POST" and request.POST.get('addMed')):
         webFormFields = request.POST
+        if 'batchNo' not in webFormFields:
+            messages.info(request,"Please fill batchNo")
+            return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
         if (webFormFields['medicineName'] == '' or webFormFields['orderQuantity'] == '' or webFormFields['batchNo'] == ''):
             messages.info(request,"Please fill all the fields")
             return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
@@ -194,12 +199,14 @@ def medicine_order(request, pk):
             if format(medDetails.expiryDate,'%Y-%m-%d') < format(timezone.now(),'%Y-%m-%d'):
                 messages.info(request,"Can Not Sale " + medDetails.medicineName + " medicine as its Expired on "+ format(medDetails.expiryDate,'%Y-%m-%d'))
                 return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
-            if Decimal(webFormFields['orderQuantity']) > medDetails.noOfTabletsInStores:
-                messages.info(request,"Quantity of " +webFormFields['medicineName']+ " has to be less than " + str(medDetails.noOfTabletsInStores) + " instead of " + webFormFields['orderQuantity'])
+            if Decimal(webFormFields['orderQuantity']) > medDetails.noOfTabletsToTrf:
+                messages.info(request,"Quantity of " +webFormFields['medicineName']+ " has to be less than " + str(medDetails.noOfTabletsToTrf) + " instead of " + webFormFields['orderQuantity'])
+                if Decimal(webFormFields['orderQuantity']) < medDetails.noOfTabletsInStores:
+                    messages.info(request,"Reach Out to Admin for transferring the medicines to Pharmacy")
                 return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
             try:
                 billDetails = Bill.objects.all().filter(medicineName__exact = webFormFields['medicineName'], patientID__patientID__exact = patientDetails.patientID, transactionCompleted__exact = 'N').get()
-                if (billDetails.noOfTabletsOrdered+int(webFormFields['orderQuantity'])) > medDetails.noOfTabletsInStores:
+                if (billDetails.noOfTabletsOrdered+int(webFormFields['orderQuantity'])) > medDetails.noOfTabletsToTrf:
                     messages.info(request,"Select a differnt Batch Number as combined " + webFormFields['medicineName'] + " medicine is greater than available in Stores")
                     return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
                 billDetails.noOfTabletsOrdered = billDetails.noOfTabletsOrdered+int(webFormFields['orderQuantity'])
@@ -246,7 +253,7 @@ def medicine_checkout(request, pk):
     for billDetail in billGeneration:
         recordToBeUpdatedInPostModel = Post.objects.all().filter(medicineName__exact = billDetail.medicineName, batchNo__exact = billDetail.batchNo).get()
         recordToBeUpdatedInPostModel.noOfTabletsSold = recordToBeUpdatedInPostModel.noOfTabletsSold + billDetail.noOfTabletsOrdered
-        recordToBeUpdatedInPostModel.noOfTabletsInStores =recordToBeUpdatedInPostModel.noOfTablets - recordToBeUpdatedInPostModel.noOfTabletsSold
+        recordToBeUpdatedInPostModel.noOfTabletsToTrf =recordToBeUpdatedInPostModel.noOfTabletsToTrf - billDetail.noOfTabletsOrdered
         
         recordToBeUpdatedInBillModel = Bill.objects.all().filter(medicineName__exact = billDetail.medicineName, batchNo__exact = billDetail.batchNo, billNo__exact = billDetail.billNo).get()
         recordToBeUpdatedInBillModel.transactionCompleted = 'Y'
@@ -334,7 +341,7 @@ def meds_edit(request, pk):
         billAdjust.save()
         medsAdjust = Post.objects.all().filter(medicineName__exact = billAdjust.medicineName,batchNo__exact = billAdjust.batchNo).get()
         medsAdjust.noOfTabletsSold = medsAdjust.noOfTabletsSold - int(meds2Return)
-        medsAdjust.noOfTabletsInStores = medsAdjust.noOfTabletsInStores + int(meds2Return)
+        medsAdjust.noOfTabletsToTrf = medsAdjust.noOfTabletsToTrf + int(meds2Return)
         medsAdjust.save()
         billDet = Bill.objects.filter(billNo__exact=billAdjust.billNo)
         return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
@@ -372,3 +379,18 @@ def report_returns(request):
         else:
             return render(request, 'pharmacyapp/report_returns.html', {'form': form})
     return render(request, 'pharmacyapp/report_returns.html', {'form': form})
+
+def meds_trf(request,pk):
+    medsTrf = Post.objects.filter(pk__exact=pk).get()
+    if (request.method == "POST" and request.POST.get('medsTrf')):
+        webFormFields = request.POST
+        if int(webFormFields['meds2Trf'])>medsTrf.noOfTabletsInStores:
+            messages.info(request,"units more than available in stores cant be transferred")
+            return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
+        medsTrf.noOfTabletsToTrf = medsTrf.noOfTabletsToTrf+int(webFormFields['meds2Trf'])
+        medsTrf.noOfTabletsInStores = medsTrf.noOfTabletsInStores - int(webFormFields['meds2Trf'])
+        medsTrf.save()
+    elif(request.method == "POST" and request.POST.get('back')):
+        posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('expiryDate')
+        return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
+    return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})

@@ -24,7 +24,7 @@ class Post(models.Model):
     pricePerTablet = models.DecimalField(max_digits=8, decimal_places=2,default ='0.01',validators=[MinValueValidator(Decimal('0.01'))])
     noOfTabletsSold = models.PositiveSmallIntegerField(default ='0')
     noOfTabletsInStores = models.PositiveSmallIntegerField(default ='0')
-    
+    noOfTabletsToTrf = models.PositiveSmallIntegerField(default ='0')
     
     def publish(self):
         self.save()

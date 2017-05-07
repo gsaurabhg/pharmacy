@@ -1,0 +1,27 @@
+{% extends 'pharmacyapp/base.html' %}
+
+{% block body_block %}
+	{% if messages %}
+	<h2 class="messages">
+		{% for message in messages %}
+		<a{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</a>
+		{% endfor %}
+	</h2>
+	{% endif %}
+
+    <h1>Medicine Transfer Form</h1>
+    <form method="POST" class="post-form">{% csrf_token %}
+    	<table>
+			<tr><td>Product Name</td><td>{{medsTrf.medicineName }}</td></tr>
+			<tr><td>Batch No</td><td>{{medsTrf.batchNo}}</td></tr>
+			<tr><td>Date Of Expiry</td><td>{{medsTrf.expiryDate}}</td></tr>
+			<tr><td>Tablet/Unit Price</td><td>{{medsTrf.pricePerTablet}}</td></tr>
+			<tr><td>Units in store</td><td>{{medsTrf.noOfTabletsInStores}}</td></tr>
+			<tr><td>Units in Pharmacy</td><td>{{medsTrf.noOfTabletsToTrf}}</td></tr>
+		</table>
+        <p>Total Meds To add in pharmacy : <input type="number" id="meds2Trf" name="meds2Trf" min="0" /></p>
+        <button type="submit" class="return btn btn-default" name="medsTrf" value="medsTrf">Transfer Medicines</button>
+        <button type="submit" class="back btn btn-default" name="back" value="back">Back</button>
+    </form>
+{% endblock body_block%}
+

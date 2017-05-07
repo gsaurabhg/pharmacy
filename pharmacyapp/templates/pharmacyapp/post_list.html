@@ -25,6 +25,8 @@
 			<th>Date of Expiry</th>
 			<th>Tablets/Unit Price</th>
 			<th>Remaining tablets/units in stock</th>
+			<th>Tablets in pharmacy</th>
+			<th>Tablets to transfer</th>
 		</tr>
 		{% for post in posts %}
 		<tr>
@@ -37,6 +39,8 @@
 			<td>{{ post.expiryDate}}</td>
 			<td>{{ post.pricePerTablet}}</td>
 			<td>{{ post.noOfTabletsInStores}}</td>
+			<td>{{post.noOfTabletsToTrf}}</td>
+			<td><a <button type="submit" class="save btn btn-default" href="{% url 'meds_trf' pk=post.pk %}">Add Tablets in Pharmacy</button></a></td>
 		</tr>
 		{% endfor %}
 		</table>
