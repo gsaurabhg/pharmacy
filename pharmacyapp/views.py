@@ -16,6 +16,10 @@ from django.core import validators
 import datetime, time, json
 from django.core import serializers
 from django.http import HttpResponse
+#needed for the pass word creae viewitems
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 def welcome(request):
     return render(request, 'pharmacyapp/popup.html')
