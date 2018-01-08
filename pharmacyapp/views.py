@@ -35,16 +35,19 @@ def post_detail(request, pk):
 @login_required    
 def post_new(request):
     current_user = request.user.username
-    currentDate = datetime.datetime.strptime(str(format(timezone.now(), '%d-%m-%Y')),"%d-%m-%Y") 
+    currentDate = datetime.datetime.strptime(str(format(datetime.date.today(), '%d-%m-%Y')),"%d-%m-%Y") 
     if (current_user == "admin" or current_user == "saurabhg"):
         if (request.method == "POST" and request.POST.get('save')):
             form = PostForm(request.POST)
             if form.is_valid():
                 post = form.save(commit=False)
-                enteredDate = datetime.datetime.strptime(str(format(post.dateOfPurchase, '%d-%m-%Y')),"%d-%m-%Y") 
+                webFormFields = request.POST
+                enteredDate = datetime.datetime.strptime(webFormFields['dateOfPurchaseForm'],'%d-%m-%Y')
+                #enteredDate = datetime.datetime.strptime(str(format(post.dateOfPurchase, '%d-%m-%Y')),"%d-%m-%Y") 
                 if ( enteredDate > currentDate):
-                    messages.info(request,"Purchase Date " + format(post.dateOfPurchase, '%d-%m-%Y') + " can not be greater than Todays date i.e., " + format(timezone.now(), '%d-%m-%Y'))
+                    messages.info(request,"Purchase Date " + webFormFields['dateOfPurchaseForm'] + " can not be greater than Todays date i.e., " + format(timezone.now(), '%d-%m-%Y'))
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+                post.dateOfPurchase= enteredDate
                 if post.pack == 0:
                     messages.info(request,"Number of Tablets/Bottles to be greater than 0")
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
@@ -68,15 +71,15 @@ def post_new(request):
                             messages.info(request,"Expiry Date to be in DD-MM-YYY format")
                             return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                     post.expiryDate = datetime.datetime.strptime(webFormFields['expiryDateForm'],'%d-%m-%Y')
-                    enteredDate = post.expiryDate
-                    if enteredDate < currentDate:
+                    enteredExpiryDate = post.expiryDate
+                    if enteredExpiryDate < currentDate:
                         messages.info(request,"enter the proper expiry Date")
                         return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                     post.pharmacy_user = request.user
                     post.noOfTablets = (int(post.quantity)+int(post.freeArticles))*int(post.pack)
                     post.pricePerTablet = post.mrp/post.pack
                     post.noOfTabletsInStores = int(post.noOfTablets) - int(post.noOfTabletsSold)
-                    post.netPurchasePrice = Decimal(post.quantity)*post.pricePerStrip*Decimal((100+post.vat+post.sat+post.addTax)/100)
+                    post.netPurchasePrice = Decimal(post.quantity)*post.pricePerStrip*Decimal((100+int(post.vat)+int(post.sat)+int(post.addTax))/100)
                     post.save()
                     return redirect('post_detail', pk=post.pk)
         else:
@@ -158,7 +161,8 @@ def patient_details(request):
             #####MAKE THE BILL FORM IN 2 FRAMES
         elif request.POST.get('billSearch'):
             webFormFields = request.POST
-            billDet = Bill.objects.filter(billNo__exact=webFormFields['billNo'])
+            bill_No = webFormFields['billNo'].upper()
+            billDet = Bill.objects.filter(billNo__exact=bill_No)
             if len(billDet) == 0:
                 messages.info(request,"Please Check the Bill Number")
             else:
@@ -226,7 +230,7 @@ def medicine_order(request, pk):
                 billDetails.batchNo = medDetails.batchNo
                 billDetails.expiryDate = medDetails.expiryDate
                 if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) == 0:
-                    billDetails.billNo = 'US00'+str(Bill.objects.count())
+                    billDetails.billNo = 'SSDS00'+str(Bill.objects.count())
                     billDetails.billDate = timezone.now()
                 else:
                     if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) > 1 :
@@ -269,6 +273,7 @@ def medicine_checkout(request, pk):
 @login_required    
 def medicine_last_checkout(request, pk):
     patientInfo = get_object_or_404(PatientDetail, pk=pk)
+    #To fix the use case of first entry
     billGeneration = Bill.objects.all().filter(patientID__patientID__exact = patientInfo.patientID,transactionCompleted__exact = 'Y').latest('pk')
     billGeneration = Bill.objects.all().filter(billNo__exact = billGeneration.billNo,transactionCompleted__exact = 'Y')
     return render(request, 'pharmacyapp/medicine_checkout.html', {'billGeneration': billGeneration})
@@ -317,7 +322,7 @@ def report_sales(request):
     
 def get_batch_no(request, medName):
     medName=medName.replace("-_____-"," ")
-    current_meds = Post.objects.all().filter(medicineName=medName,noOfTabletsInStores__gt = 0)
+    current_meds = Post.objects.all().filter(medicineName=medName,noOfTabletsToTrf__gt = 0)
     json_models = serializers.serialize("json", current_meds)
     return HttpResponse(json_models, content_type="application/javascript")
 

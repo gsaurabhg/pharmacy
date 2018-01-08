@@ -11,14 +11,14 @@
 	<table id="cartMeds">
         <tbody>
 		<tr>
-			<th>Product Name</th>
+			<th>Medicines</th>
 			<th>Batch No</th>
-			<th>Date of Expiry</th>
-			<th>Tablet/Unit Price</th>
-			<th>Quantity Ordered</th>
+			<th>Expiry Date</th>
+			<th>Unit Price</th>
+			<th>QTY.</th>
 			<th>Price</th>
 			<th>Discount %</th>
-			<th>Price after Discount</th>
+			<th>Discounted Price</th>
 		</tr>
 		{% for billDetail in billGeneration %}
 		<tr>
@@ -47,7 +47,7 @@
     </div>
     {% if user.is_authenticated %}
     <script type="text/javascript" src="/static/js/jscript-queries.js"></script>
-    <input type="button" onclick="printDiv('printarea')" value="Print" />
+    <input type="button" onclick="printDiv('printarea')" value="Print Bill" />
     <a <button type="submit" class="save btn btn-default" href="/">Home</button></a>
     {% endif %}
 {% else %}

@@ -25,8 +25,8 @@
 
     <form method="POST" class="patient-form">{% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="save btn btn-default" name="search" value="search">Search</button>
-        <button type="submit" class="save btn btn-default" name="newReg" value="newReg">New Registeration</button>
+        <button type="submit" class="save btn btn-default" name="search" value="search">Search Old Patient</button>
+        <button type="submit" class="save btn btn-default" name="newReg" value="newReg">New Patient</button>
     </form>
 
 {% endblock body_block%}

@@ -17,7 +17,7 @@ class Post(models.Model):
     netPurchasePrice = models.DecimalField(max_digits=8, decimal_places=2,validators=[MinValueValidator(Decimal('0.01'))])
     mrp = models.DecimalField("M.R.P.",max_digits=8, decimal_places=2,validators=[MinValueValidator(Decimal('0.01'))])
     dateOfPurchase = models.DateField("Date Of Purchase",default=timezone.now)
-    vat = models.PositiveSmallIntegerField("VAT (%)",choices=Tax,default ='4')
+    vat = models.PositiveSmallIntegerField("VAT (%)",choices=Tax,default ='0')
     sat = models.PositiveSmallIntegerField("SAT (%)",choices=Tax_sat,default ='0')
     addTax = models.PositiveSmallIntegerField("Additional Taxes (%)",default ='0')
     noOfTablets = models.PositiveSmallIntegerField(default ='0')

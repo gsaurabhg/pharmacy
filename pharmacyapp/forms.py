@@ -4,14 +4,16 @@ from .models import Bill
 from .models import PatientDetail, returnBill
 
 class PostForm(forms.ModelForm):
-    dateOfPurchase =  forms.DateField(input_formats= [('%d-%m-%Y')],label="Date of Purchase",help_text="(Pls Enter Date in dd-mm-yyyy format)")
+    #dateOfPurchase =  forms.DateField(input_formats= [('%d-%m-%Y')],label="Date of Purchase",help_text="(Pls Enter Date in dd-mm-yyyy format)")
     class Meta:
         model = Post
-        exclude = ['pharmacy_user','netPurchasePrice','noOfTablets','pricePerTablet','noOfTabletsSold','noOfTabletsInStores','expiryDate','noOfTabletsToTrf']
+        exclude = ['pharmacy_user','netPurchasePrice','noOfTablets','pricePerTablet','noOfTabletsSold','noOfTabletsInStores',
+        		'expiryDate','noOfTabletsToTrf','netPurchasePrice','vat','sat','addTax','freeArticles','dateOfPurchase']
         widgets = {
                 'quantity' : forms.TextInput(    attrs   =  {'placeholder':'Number of strips'}),
                 'mrp' : forms.TextInput(    attrs   =  {'placeholder':'Maximum Retail Price per strip'}),
-        		'expiryDate' : forms.TextInput(    attrs   =  {'placeholder':'YYYY-MM-DD'})
+        		'expiryDate' : forms.TextInput(    attrs   =  {'placeholder':'YYYY-MM-DD'}),
+        		'dateOfPurchase' : forms.TextInput(    attrs   =  {'placeholder':'DD-MM-YYYY'})
         }
         
 

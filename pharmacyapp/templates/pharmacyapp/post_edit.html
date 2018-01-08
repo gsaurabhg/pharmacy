@@ -13,12 +13,11 @@
     <form method="POST" class="post-form">{% csrf_token %}
         <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
         {{ form.as_p }}
-		<style>
-		.ui-datepicker-calendar {
-			display: none;
-			}
-		</style>
+
+        <p>Purchase Date: <input type="text" id="dateOfPurchaseForm" name="dateOfPurchaseForm" class="date-picker" /></p>
+
         <p>Expiry Date: <input type="text" id="expiryDateForm" name="expiryDateForm" class="date-picker" /></p></br></br>
+
         <button type="submit" class="save btn btn-default" name="save" value="save">Save</button>
     </form>
 {% endblock body_block%}

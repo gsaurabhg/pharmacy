@@ -44,7 +44,7 @@
 			<td>{{ billDetail.totalPrice }}</td>
 			<td>{{ billDetail.discount }}</td>
 			<td>{{ billDetail.discountedPrice }}</td>
-			<td><a <button type="submit" class="save btn btn-default" name="remove" value="remove" href="{% url 'medicine_remove' pk=billDetail.pk %}">Remove from Cart</button></a></td>
+			<td><a <button type="submit" class="save btn btn-default" name="remove" value="remove" href="{% url 'medicine_remove' pk=billDetail.pk %}">Remove Medicine</button></a></td>
 			<!--
 			<script type="text/javascript" src="/static/js/jscript-queries.js"></script>
 			<td><button id="delete-btn"> Delete</button></td>-->
@@ -64,8 +64,8 @@
         </tbody>
     </table>
     {% if user.is_authenticated %}
-    <a <button type="submit" class="save btn btn-default" href="{% url 'medicine_order' pk=billGeneration.0.patientID.pk %}">Add</button></a>
-    <a <button type="submit" class="save btn btn-default" href="{% url 'medicine_checkout' pk=billGeneration.0.patientID.pk %}">Checkout</button></a>
+    <a <button type="submit" class="save btn btn-default" href="{% url 'medicine_order' pk=billGeneration.0.patientID.pk %}">Add Medicine</button></a>
+    <a <button type="submit" class="save btn btn-default" href="{% url 'medicine_checkout' pk=billGeneration.0.patientID.pk %}">Final Billing</button></a>
     {% endif %}
 {% endif %}
 

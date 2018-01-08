@@ -11,12 +11,12 @@
 
 	<h1>Billing Information</h1>
 	<form method="POST" class="medicine-order">{% csrf_token %}
-		<p><a>Product Name</a></p>
+		<p><a>Medicine Name</a></p>
 		<p><select name="medicineName" id="medicineName" onmousedown="this.value='';" onchange="get_batch_no(this.value);">
 			<option value="{{form.medicineName}}</option>
   		</select></p>
 
-        <p><a>Quantity:</a></p> <p><a>{{form.orderQuantity}}</a></p>
+        <p><a>Quantity (Tablet/Bottle):</a></p> <p><a>{{form.orderQuantity}}</a></p>
 
         <p><a>Batch Number:</a></p><p><select name="batchNo" id="batchNo" disabled="true">
         <option>Batch Number</option>
@@ -24,8 +24,8 @@
 
         <p><a>Discount:</a></p> <p><a>{{form.discount}}</a></p>
 
-        <button type="submit" class="save btn btn-default" name="addMed" value="addMed">Add to Cart</button>
-        <button type="submit" class="save btn btn-default" name="order" value="order">Preview and Order</button>
+        <button type="submit" class="save btn btn-default" name="addMed" value="addMed">Add Medicine</button>
+        <button type="submit" class="save btn btn-default" name="order" value="order">Proceed for Billing</button>
 
 		<script type="text/javascript" src="/static/js/jscript-queries.js"></script>
 	</form>

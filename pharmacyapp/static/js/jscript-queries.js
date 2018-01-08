@@ -97,7 +97,7 @@ function finishTable_v1(colNo)
 
 function get_batch_no(request_data)
 {
-	request_data=request_data.trim().replace(/ /g, '-_____-');
+	request_data=request_data.trim().replace(/\s/g, '-_____-');
 	var url = "/medicineName/" + request_data + "/get_batch_no";
 	var medicineName = request_data;
 	$.getJSON(url, function(medName){
@@ -139,6 +139,16 @@ $.datepicker.setDefaults({
 });
 
 $(document).ready(function() {
+    $( "#dateOfPurchaseForm" ).datepicker({
+     changeDay: true,
+     changeMonth: true,
+     changeYear: true,
+     dateFormat: 'dd-mm-yy',
+  });
+});
+
+
+$(document).ready(function() {
    $('#expiryDateForm').datepicker({
      changeMonth: true,
      changeYear: true,
@@ -148,17 +158,7 @@ $(document).ready(function() {
         var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
         var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
         $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
-     },
-
-     beforeShow: function() {
-       if ((selDate = $(this).val()).length > 0)
-       {
-          iYear = selDate.substring(selDate.length - 4, selDate.length);
-          iMonth = jQuery.inArray(selDate.substring(0, selDate.length - 5), $(this).datepicker('option', 'monthNames'));
-          $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
-          $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
-       }
-    }
+     }
   });
 });
 
