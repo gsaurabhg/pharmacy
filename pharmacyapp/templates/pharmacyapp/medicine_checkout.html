@@ -10,7 +10,7 @@
     <a> Contact Details : {{billGeneration.0.patientID.patientPhoneNo}}</a></br>
 	<table id="cartMeds">
         <tbody>
-		<tr>
+		<tr class="first">
 			<th>Medicines</th>
 			<th>Batch No</th>
 			<th>Expiry Date</th>
@@ -32,7 +32,7 @@
 			<td>{{ billDetail.discountedPrice }}</td>
 		</tr>
 		{% endfor %}
-		<tr>
+		<tr class="last">
 		    <th> Total Bill</th>
 		    <th></th>
 		    <th></th>
