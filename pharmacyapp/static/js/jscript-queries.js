@@ -53,6 +53,25 @@ function finishTable()
   return;
 }
 
+(5,6)
+function finishTable_2ClmnSum(colNo1,colNo2)
+{
+  var totalPrice1 = computeTableColumnTotal("cartMeds",colNo1);
+  var totalPrice = Math.round(totalPrice1*100)/100;
+  var totalDiscountedPriceUnrounded = computeTableColumnTotal("cartMeds",colNo2);
+  var totalDiscountedPrice = Math.round(totalDiscountedPriceUnrounded*100)/100;
+  try
+  {
+    window.document.getElementById("TP").innerHTML = totalPrice;
+    window.document.getElementById("TDP").innerHTML = totalDiscountedPrice;
+  }
+  catch (ex)
+  {
+     window.alert("Exception in function finishTable()\n" + ex);
+  }
+  return;
+}
+
 function finishTable_retMeds()
 {
   var totalReturnAmount = computeTableColumnTotal("cartMeds",9);

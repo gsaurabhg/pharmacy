@@ -17,7 +17,6 @@
 			<th>Unit Price</th>
 			<th>QTY.</th>
 			<th>Price</th>
-			<th>Discount %</th>
 			<th>Discounted Price</th>
 		</tr>
 		{% for billDetail in billGeneration %}
@@ -25,10 +24,9 @@
 			<td>{{ billDetail.medicineName }}</td>
 			<td>{{ billDetail.batchNo }}</td>
 			<td>{{ billDetail.expiryDate }}</td>
-			<td>{{ billDetail.pricePerTablet }}</td>
+			<td>{{ billDetail.pricePerTablet }}<c/td>
 			<td>{{ billDetail.noOfTabletsOrdered }}</td>
 			<td>{{ billDetail.totalPrice }}</td>
-			<td>{{ billDetail.discount }}</td>
 			<td>{{ billDetail.discountedPrice }}</td>
 		</tr>
 		{% endfor %}
@@ -39,11 +37,12 @@
 		    <th></th>
 		    <th></th>
 		    <th id="TP"></th>
-		    <th></th>
 		    <th id="TDP"></th>
 		</tr>
         </tbody>
     </table>
+    </br><d> Total Discount given:{{ billGeneration.0.discount }}%</d>
+
     </div>
     {% if user.is_authenticated %}
     <script type="text/javascript" src="/static/js/jscript-queries.js"></script>
@@ -55,7 +54,7 @@
 {% endif %}
 
 {% if billGeneration %}
-    <body onload="finishTable();">
+    <body onload="finishTable_2ClmnSum(5,6);">
     <script type="text/javascript" src="/static/js/jscript-queries.js"></script>
     </body>
 {% endif %}
