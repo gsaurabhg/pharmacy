@@ -133,8 +133,8 @@ body {
       display: none;
     }
     @page {
-      size: A3;
-      margin-left: 2cm;
+      size: A6;
+      margin-left: 1cm;
       margin-bottom: 0cm;
       margin-top: 0cm;
     }
