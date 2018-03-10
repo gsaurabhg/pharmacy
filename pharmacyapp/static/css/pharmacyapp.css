@@ -118,7 +118,7 @@ body {
     font-size:10px;
 }
 .footNote {
-    font-size:12px;
+    font-size:11px;
 }
 .rightAlign {
     font-size:12px;
@@ -160,6 +160,7 @@ body {
     width:100%;
     margin-top: 0;
     border:none;
+    height:10px;
 }
 .patDetLeft{
     font-family: 'verdana';
@@ -169,12 +170,15 @@ body {
     font-size:12px;
     border-style:none none none none;
     background-color:rgba(0,0,255,0);
+    height:10px;
 }
 .patDetRight{
     font-size:12px;
     text-align:right;
-    color:black;    border-style:none none none none;
+    color:black;    
+    border-style:none none none none;
     background-color:rgba(0,0,255,0);
+    height:10px;
 }
 
     
@@ -184,9 +188,9 @@ body {
     }
     @page {
       size: A6;
-      margin-left: 1cm;
+      margin-left: 0.5cm;
       margin-bottom: 0cm;
-      margin-top: 0cm;
+      margin-top: -1.4cm;
     }
     table, td, th {
         margin-top: 10;

@@ -6,7 +6,7 @@
         <tbody>
             <tr class="shopHeading">
                <th class="shopNameLeft"> Shree Sai Drug Store</th>
-               <th class="shopNameRight">Shop No.: 9879879871</th>
+               <th class="shopNameRight">Shop Ph. No.: 9879879871</th>
             </tr>
         </tbody>
     </table>
@@ -28,8 +28,8 @@
 			<th>Expiry Date</th>
 			<th>Unit Price</th>
 			<th>QTY.</th>
-			<th>Price</th>
-			<th>Discounted Price</th>
+			<th>Price- &#8377;</th>
+			<th>Discounted Price -  &#8377;</th>
 		</tr>
 		{% for billDetail in billGeneration %}
 		<tr>
@@ -53,8 +53,7 @@
 		</tr>
         </tbody>
     </table>
-    <d class="discount"> Total Discount given:{{ billGeneration.0.discount }}%</d></br></br>
-    <div class="rightAlign"> Authorised Signature</div>
+    <d class="discount"> Total Discount given:{{ billGeneration.0.discount }}%</d></br>
     <d class="footNote">
     (&#2342;&#2357;&#2366; 
     &#2357;&#2366;&#2346;&#2360;&#2368; 
@@ -68,7 +67,7 @@
     &#2354;&#2366;&#2319;&#2375;&#2306; 
     &#2404;)
     </d>
-
+    <div class="rightAlign"> Authorised Signature</div>
     </div>
     {% if user.is_authenticated %}
     <script type="text/javascript" src="/static/js/jscript-queries.js"></script>
