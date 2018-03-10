@@ -114,6 +114,16 @@ body {
 .sidebar-nav {
         padding: 9px 0;
 }
+.discount {
+    font-size:10px;
+}
+.footNote {
+    font-size:12px;
+}
+.rightAlign {
+    font-size:12px;
+    text-align:right;
+}
 
 @media (max-width: 980px) {
     /* Enable use of floated navbar text */
@@ -127,6 +137,46 @@ body {
 .brand {
     font-size: 200pt;
     }
+
+   
+#shopHead{
+    margin-top: 0;
+    width:100%;
+}
+.shopNameRight{
+    font-family: 'verdana';
+    font-style: italic;
+    text-align:right;
+    font-size:8px;
+    border-style:none none solid none;
+}
+.shopNameLeft{
+    font-size:16px;
+    text-align:left;
+    border-style:none none solid none;
+}
+
+#patDetails{
+    width:100%;
+    margin-top: 0;
+    border:none;
+}
+.patDetLeft{
+    font-family: 'verdana';
+    font-style: italic;
+    color:black;
+    text-align:left;
+    font-size:12px;
+    border-style:none none none none;
+    background-color:rgba(0,0,255,0);
+}
+.patDetRight{
+    font-size:12px;
+    text-align:right;
+    color:black;    border-style:none none none none;
+    background-color:rgba(0,0,255,0);
+}
+
     
 @media print {
     .hidden-print {
@@ -160,5 +210,20 @@ body {
     }
     .header {
         display: none;
+    }
+    #shopHead{
+        width:100%;
+        margin-top: 0;
+        border-style:none none solid none;
+    }
+    .shopNameRight{
+        text-align:right;
+        font-size:8px;
+    }
+    .shopNameLeft{
+        font-family: 'verdana';
+        font-style: italic;
+        font-size:16px;
+        text-align:left;
     }
 }

@@ -2,12 +2,24 @@
 {% block body_block%}
 {% if billGeneration %}
     <div id="printarea">
-    <caption><h1>Shree Sai Drug Shop</h1></caption>
-    <a> Bill No: {{billGeneration.0.billNo}}</a></br>
-    <a> Bill Date: {{billGeneration.0.billDate}}</a></br>
-    <a> ID : {{billGeneration.0.patientID.patientID}}</a></br>
-    <a> Name: {{billGeneration.0.patientID.patientName}}</a></br>
-    <a> Contact Details : {{billGeneration.0.patientID.patientPhoneNo}}</a></br>
+    <table id="shopHead">
+        <tbody>
+            <tr class="shopHeading">
+               <th class="shopNameLeft"> Shree Sai Drug Store</th>
+               <th class="shopNameRight">Shop No.: 9879879871</th>
+            </tr>
+        </tbody>
+    </table>
+    <table id="patDetails">
+        <tr>
+            <th class="patDetLeft"> Pt. Name: {{billGeneration.0.patientID.patientName}}</th>
+            <th class="patDetRight"> Date: {{billGeneration.0.billDate}}</th>
+        </tr>
+        <tr>
+            <th class="patDetLeft"> Bill No: {{billGeneration.0.billNo}}</th>
+            <th class="patDetRight"> Contact Details : {{billGeneration.0.patientID.patientPhoneNo}}</th>
+        </tr>
+    </table>    
 	<table id="cartMeds">
         <tbody>
 		<tr class="first">
@@ -41,7 +53,21 @@
 		</tr>
         </tbody>
     </table>
-    </br><d> Total Discount given:{{ billGeneration.0.discount }}%</d>
+    <d class="discount"> Total Discount given:{{ billGeneration.0.discount }}%</d></br></br>
+    <div class="rightAlign"> Authorised Signature</div>
+    <d class="footNote">
+    (&#2342;&#2357;&#2366; 
+    &#2357;&#2366;&#2346;&#2360;&#2368; 
+    &#2407;&#2406; 
+    &#2342;&#2367;&#2344; 
+    &#2325;&#2375; 
+    &#2349;&#2368;&#2340;&#2352; &#2404; 
+    &#2325;&#2371;&#2346;&#2351;&#2366; 
+    &#2348;&#2367;&#2354; 
+    &#2360;&#2366;&#2341; 
+    &#2354;&#2366;&#2319;&#2375;&#2306; 
+    &#2404;)
+    </d>
 
     </div>
     {% if user.is_authenticated %}
