@@ -140,7 +140,6 @@ body {
 
    
 #shopHead{
-    margin-top: 0;
     width:100%;
 }
 .shopNameRight{
@@ -158,9 +157,7 @@ body {
 
 #patDetails{
     width:100%;
-    margin-top: 0;
     border:none;
-    height:10px;
 }
 .patDetLeft{
     font-family: 'verdana';
@@ -170,7 +167,6 @@ body {
     font-size:12px;
     border-style:none none none none;
     background-color:rgba(0,0,255,0);
-    height:10px;
 }
 .patDetRight{
     font-size:12px;
@@ -178,7 +174,6 @@ body {
     color:black;    
     border-style:none none none none;
     background-color:rgba(0,0,255,0);
-    height:10px;
 }
 
     
@@ -190,10 +185,11 @@ body {
       size: A6;
       margin-left: 0.5cm;
       margin-bottom: 0cm;
-      margin-top: -1.4cm;
+      margin-top: 0cm;
     }
     table, td, th {
-        margin-top: 10;
+        margin-top: 0;
+        margin-bottom:0;
         border: 1px none black;
         font-size: 8pt;
         background-color: white;
@@ -216,8 +212,6 @@ body {
         display: none;
     }
     #shopHead{
-        width:100%;
-        margin-top: 0;
         border-style:none none solid none;
     }
     .shopNameRight{

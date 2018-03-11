@@ -12,12 +12,14 @@
     </table>
     <table id="patDetails">
         <tr>
-            <th class="patDetLeft"> Pt. Name: {{billGeneration.0.patientID.patientName}}</th>
-            <th class="patDetRight"> Date: {{billGeneration.0.billDate}}</th>
-        </tr>
-        <tr>
-            <th class="patDetLeft"> Bill No: {{billGeneration.0.billNo}}</th>
-            <th class="patDetRight"> Contact Details : {{billGeneration.0.patientID.patientPhoneNo}}</th>
+            <th class="patDetLeft"> 
+                Pt. Name: {{billGeneration.0.patientID.patientName}}</br>
+                Bill No: {{billGeneration.0.billNo}}
+            </th>
+            <th class="patDetRight"> 
+                Date: {{billGeneration.0.billDate}}</br>
+                Contact Details : {{billGeneration.0.patientID.patientPhoneNo}}
+            </th>
         </tr>
     </table>    
 	<table id="cartMeds">
@@ -28,8 +30,8 @@
 			<th>Expiry Date</th>
 			<th>Unit Price</th>
 			<th>QTY.</th>
-			<th>Price- &#8377;</th>
-			<th>Discounted Price -  &#8377;</th>
+			<th>Price(&#8377;)</th>
+			<th>Discounted Price (&#8377;)</th>
 		</tr>
 		{% for billDetail in billGeneration %}
 		<tr>
