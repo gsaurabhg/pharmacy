@@ -186,7 +186,7 @@ def bill_details(request, pk):
 @login_required    
 def medicine_order(request, pk):
     patientDetails = get_object_or_404(PatientDetail, pk=pk)
-    availableMeds = Post.objects.filter(noOfTabletsToTrf__gt = 0).values()
+    availableMeds = Post.objects.filter(noOfTabletsToTrf__gt = 0).values().order_by('medicineName')
     medicineNameChoices = []
     for med in availableMeds:
         medicineNameChoices.append((med['medicineName'], med['medicineName']),)
