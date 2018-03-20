@@ -25,7 +25,7 @@ def welcome(request):
     return render(request, 'pharmacyapp/popup.html')
 
 def post_list(request):
-    posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('expiryDate')
+    posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
     return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
     
 def post_detail(request, pk):
@@ -87,7 +87,7 @@ def post_new(request):
         return render(request, 'pharmacyapp/post_edit.html', {'form': form})
     else:
         messages.info(request,"You have to LOG in as ADMIN to use this feature")
-        posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('expiryDate')
+        posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
         return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
         
 
@@ -389,17 +389,24 @@ def report_returns(request):
             return render(request, 'pharmacyapp/report_returns.html', {'form': form})
     return render(request, 'pharmacyapp/report_returns.html', {'form': form})
 
+@login_required
 def meds_trf(request,pk):
-    medsTrf = Post.objects.filter(pk__exact=pk).get()
-    if (request.method == "POST" and request.POST.get('medsTrf')):
-        webFormFields = request.POST
-        if int(webFormFields['meds2Trf'])>medsTrf.noOfTabletsInStores:
-            messages.info(request,"units more than available in stores cant be transferred")
-            return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
-        medsTrf.noOfTabletsToTrf = medsTrf.noOfTabletsToTrf+int(webFormFields['meds2Trf'])
-        medsTrf.noOfTabletsInStores = medsTrf.noOfTabletsInStores - int(webFormFields['meds2Trf'])
-        medsTrf.save()
-    elif(request.method == "POST" and request.POST.get('back')):
-        posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('expiryDate')
+    current_user = request.user.username
+    if (current_user == "admin" or current_user == "saurabhg"):
+        medsTrf = Post.objects.filter(pk__exact=pk).get()
+        if (request.method == "POST" and request.POST.get('medsTrf')):
+            webFormFields = request.POST
+            if int(webFormFields['meds2Trf'])>medsTrf.noOfTabletsInStores:
+                messages.info(request,"units more than available in stores cant be transferred")
+                return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
+            medsTrf.noOfTabletsToTrf = medsTrf.noOfTabletsToTrf+int(webFormFields['meds2Trf'])
+            medsTrf.noOfTabletsInStores = medsTrf.noOfTabletsInStores - int(webFormFields['meds2Trf'])
+            medsTrf.save()
+        elif(request.method == "POST" and request.POST.get('back')):
+            posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
+            return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
+        return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
+    else:
+        messages.info(request,"You have to log in using ADMIN credentials")
+        posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
         return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
-    return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
