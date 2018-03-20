@@ -58,7 +58,7 @@ def post_new(request):
                     medicineRecord.quantity = post.quantity+medicineRecord.quantity
                     medicineRecord.freeArticles = int(post.freeArticles)+medicineRecord.freeArticles
                     medicineRecord.noOfTablets = (medicineRecord.quantity+medicineRecord.freeArticles)*medicineRecord.pack
-                    medicineRecord.noOfTabletsInStores = medicineRecord.noOfTablets - medicineRecord.noOfTabletsSold
+                    medicineRecord.noOfTabletsInStores = medicineRecord.noOfTablets - medicineRecord.noOfTabletsSold - medicineRecord.noOfTabletsToTrf
                     medicineRecord.netPurchasePrice = medicineRecord.quantity*medicineRecord.pricePerStrip*(1+Decimal(medicineRecord.vat+medicineRecord.sat+medicineRecord.addTax)/100)
                     medicineRecord.save()
                     return redirect('post_list')
@@ -108,7 +108,7 @@ def post_edit(request, pk):
             post.pharmacy_user = request.user
             post.noOfTablets = (post.quantity+post.freeArticles)*post.pack
             post.pricePerTablet = post.mrp/post.pack
-            post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold
+            post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold - post.noOfTabletsToTrf
             post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat+post.sat+post.addTax)/100)
             webFormFields = request.POST
             try:
