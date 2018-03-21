@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 #Below import is needed for making OR based query
-from django.db.models import Q
+from django.db.models import Q, F
 #Below import is needed for creating the pop ups
 from django.contrib import messages
 from pharmacyapp.bing_search import run_query
@@ -25,7 +25,8 @@ def welcome(request):
     return render(request, 'pharmacyapp/popup.html')
 
 def post_list(request):
-    posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
+    #posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
+    posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
     return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
     
 def post_detail(request, pk):
@@ -87,7 +88,8 @@ def post_new(request):
         return render(request, 'pharmacyapp/post_edit.html', {'form': form})
     else:
         messages.info(request,"You have to LOG in as ADMIN to use this feature")
-        posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
+        #posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
+        posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
         return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
         
 
@@ -403,10 +405,12 @@ def meds_trf(request,pk):
             medsTrf.noOfTabletsInStores = medsTrf.noOfTabletsInStores - int(webFormFields['meds2Trf'])
             medsTrf.save()
         elif(request.method == "POST" and request.POST.get('back')):
-            posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
+            #posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
+            posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
             return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
         return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
     else:
         messages.info(request,"You have to log in using ADMIN credentials")
-        posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
+        #posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
+        posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
         return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
