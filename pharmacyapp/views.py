@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 #Below import is needed for making OR based query
-from django.db.models import Q, F
+from django.db.models import Q, F, Count
 #Below import is needed for creating the pop ups
 from django.contrib import messages
 from pharmacyapp.bing_search import run_query
@@ -232,7 +232,8 @@ def medicine_order(request, pk):
                 billDetails.batchNo = medDetails.batchNo
                 billDetails.expiryDate = medDetails.expiryDate
                 if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) == 0:
-                    billDetails.billNo = 'SSDS00'+str(Bill.objects.count())
+                    noOfBills = Bill.objects.values('billNo').annotate(cnt=Count('billNo'))
+                    billDetails.billNo = 'SSDS0'+str(len(noOfBills))
                     billDetails.billDate = timezone.now()
                 else:
                     if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) > 1 :
