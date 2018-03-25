@@ -233,7 +233,7 @@ def medicine_order(request, pk):
                 billDetails.expiryDate = medDetails.expiryDate
                 if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) == 0:
                     noOfBills = Bill.objects.values('billNo').annotate(cnt=Count('billNo'))
-                    billDetails.billNo = 'SSDS0'+str(len(noOfBills))
+                    billDetails.billNo = 'SSDS-18-'+str(len(noOfBills))
                     billDetails.billDate = timezone.now()
                 else:
                     if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) > 1 :
@@ -343,6 +343,9 @@ def meds_edit(request, pk):
         if int(meds2Return) > billAdjust.noOfTabletsOrdered:
             messages.info(request,"You are returning medicines more than you bought!! Pls check")
             return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
+        if int(meds2Return) < 0:
+            messages.info(request,"Whew..u r the culprit!! wake up")
+            return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
         if format(billAdjust.expiryDate,'%Y-%m-%d') < format(timezone.now(),'%Y-%m-%d'):
             messages.info(request,"You are returning medicines after its expired!! Pls check")
             return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
@@ -401,6 +404,9 @@ def meds_trf(request,pk):
             webFormFields = request.POST
             if int(webFormFields['meds2Trf'])>medsTrf.noOfTabletsInStores:
                 messages.info(request,"units more than available in stores cant be transferred")
+                return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
+            if int(webFormFields['meds2Trf']) <0:
+                messages.info(request,"Hoolala, GOD BLESS U Pls check entry field")
                 return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
             medsTrf.noOfTabletsToTrf = medsTrf.noOfTabletsToTrf+int(webFormFields['meds2Trf'])
             medsTrf.noOfTabletsInStores = medsTrf.noOfTabletsInStores - int(webFormFields['meds2Trf'])
