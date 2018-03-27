@@ -19,6 +19,7 @@ from django.http import HttpResponse
 #needed for the pass word creae viewitems
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.http import HttpResponseRedirect
 
 
 def welcome(request):
@@ -215,15 +216,20 @@ def medicine_order(request, pk):
                     messages.info(request,"Reach Out to Admin for transferring the medicines to Pharmacy")
                 return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
             try:
-                billDetails = Bill.objects.all().filter(medicineName__exact = webFormFields['medicineName'], patientID__patientID__exact = patientDetails.patientID, transactionCompleted__exact = 'N').get()
+                #TODO: in below, add the filter for the batch number to take care of the medicine with same
+                #      name but with different batch number. currently, it takes one of the batch no and updates.
+                billDetails = Bill.objects.all().filter(medicineName__exact = webFormFields['medicineName'], \
+                patientID__patientID__exact = patientDetails.patientID, transactionCompleted__exact = 'N').get()
                 if (billDetails.noOfTabletsOrdered+int(webFormFields['orderQuantity'])) > medDetails.noOfTabletsToTrf:
-                    messages.info(request,"Select a differnt Batch Number as combined " + webFormFields['medicineName'] + " medicine is greater than available in Stores")
+                    messages.info(request,"Select a different Batch Number as combined " + webFormFields['medicineName'] + \
+                    " medicine is greater than available in Stores")
                     return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
                 billDetails.noOfTabletsOrdered = billDetails.noOfTabletsOrdered+int(webFormFields['orderQuantity'])
                 billDetails.totalPrice = billDetails.noOfTabletsOrdered * billDetails.pricePerTablet
                 billDetails.discountedPrice = billDetails.totalPrice*(Decimal(1)-(Decimal(billDetails.discount)/Decimal(100)))
             except ObjectDoesNotExist:
-                billDetails = Bill(patientID=PatientDetail.objects.get(patientID = patientDetails.patientID),medicineName=webFormFields['medicineName'],noOfTabletsOrdered = int(webFormFields['orderQuantity']))
+                billDetails = Bill(patientID=PatientDetail.objects.get(patientID = patientDetails.patientID), \
+                medicineName=webFormFields['medicineName'],noOfTabletsOrdered = int(webFormFields['orderQuantity']))
                 billDetails.pricePerTablet = medDetails.pricePerTablet
                 billDetails.totalPrice = Decimal(webFormFields['orderQuantity'])*medDetails.pricePerTablet
                 billDetails.discount = int(webFormFields['discount'])
@@ -237,10 +243,12 @@ def medicine_order(request, pk):
                     billDetails.billDate = timezone.now()
                 else:
                     if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) > 1 :
-                        unSettledRecord = Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')
+                        unSettledRecord = Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID, \
+                        transactionCompleted__exact = 'N')
                         unSettledRecord = unSettledRecord[0]
                     else:
-                        unSettledRecord = Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N').get()
+                        unSettledRecord = Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID, \
+                        transactionCompleted__exact = 'N').get()
                     billDetails.billNo = unSettledRecord.billNo
                     billDetails.billDate = unSettledRecord.billDate
             billDetails.save()
@@ -273,6 +281,12 @@ def medicine_checkout(request, pk):
         recordToBeUpdatedInBillModel.save()
     return render(request, 'pharmacyapp/medicine_checkout.html', {'billGeneration': billGeneration})
 
+@login_required
+def medicine_allremove(request,pk):
+    patientDetail= get_object_or_404(PatientDetail,pk=pk)
+    Bill.objects.filter(patientID__patientID__exact = patientDetail.patientID, transactionCompleted__exact= 'N').delete()
+    return HttpResponseRedirect("/patient/details")
+
 @login_required    
 def medicine_last_checkout(request, pk):
     patientInfo = get_object_or_404(PatientDetail, pk=pk)
@@ -284,7 +298,8 @@ def medicine_last_checkout(request, pk):
 @login_required  
 def medicine_remove(request, pk):
     billInfo = get_object_or_404(Bill,pk=pk)
-    models = Bill.objects.filter(billNo__exact = billInfo.billNo, medicineName__exact=billInfo.medicineName, batchNo__exact = billInfo.batchNo, patientID__patientID__exact = billInfo.patientID.patientID, transactionCompleted__exact= 'N').delete()
+    models = Bill.objects.filter(billNo__exact = billInfo.billNo, medicineName__exact=billInfo.medicineName, \
+    batchNo__exact = billInfo.batchNo, patientID__patientID__exact = billInfo.patientID.patientID, transactionCompleted__exact= 'N').delete()
     billGeneration = Bill.objects.all().filter(patientID__patientID__exact = billInfo.patientID.patientID,transactionCompleted__exact = 'N')
     if billGeneration :
         return render(request, 'pharmacyapp/sideNavigation.html',{'billGeneration': billGeneration})
