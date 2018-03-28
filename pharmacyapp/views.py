@@ -385,7 +385,7 @@ def report_returns(request):
     if (request.method == "POST" and request.POST.get('Today')):
         startdate = date.today()
         enddate = startdate+timedelta(days=0)
-        reports= Bill.objects.filter(billDate__range=[startdate, enddate],returnSales__exact = 'Y').order_by('medicineName')
+        reports= Bill.objects.filter(returnSalesBillDate__range=[startdate, enddate],returnSales__exact = 'Y').order_by('medicineName')
         return render(request, 'pharmacyapp/report_returns.html', {'reports': reports})
     elif(request.method == "POST" and request.POST.get('Yesterday')):
         startdate = date.today()-timedelta(days=1)
