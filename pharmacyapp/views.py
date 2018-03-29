@@ -218,8 +218,8 @@ def medicine_order(request, pk):
             try:
                 #TODO: in below, add the filter for the batch number to take care of the medicine with same
                 #      name but with different batch number. currently, it takes one of the batch no and updates.
-                billDetails = Bill.objects.all().filter(medicineName__exact = webFormFields['medicineName'], \
-                patientID__patientID__exact = patientDetails.patientID, transactionCompleted__exact = 'N').get()
+                billDetails = Bill.objects.all().filter(medicineName__exact = webFormFields['medicineName'],patientID__patientID__exact = \
+                patientDetails.patientID, transactionCompleted__exact = 'N', batchNo__exact = webFormFields['batchNo']).get()
                 if (billDetails.noOfTabletsOrdered+int(webFormFields['orderQuantity'])) > medDetails.noOfTabletsToTrf:
                     messages.info(request,"Select a different Batch Number as combined " + webFormFields['medicineName'] + \
                     " medicine is greater than available in Stores")
