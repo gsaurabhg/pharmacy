@@ -19,14 +19,12 @@ from django.http import HttpResponse
 #needed for the pass word creae viewitems
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-from django.http import HttpResponseRedirect
 
 
 def welcome(request):
     return render(request, 'pharmacyapp/popup.html')
 
 def post_list(request):
-    #posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
     posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
     return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
     
@@ -216,8 +214,6 @@ def medicine_order(request, pk):
                     messages.info(request,"Reach Out to Admin for transferring the medicines to Pharmacy")
                 return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
             try:
-                #TODO: in below, add the filter for the batch number to take care of the medicine with same
-                #      name but with different batch number. currently, it takes one of the batch no and updates.
                 billDetails = Bill.objects.all().filter(medicineName__exact = webFormFields['medicineName'],patientID__patientID__exact = \
                 patientDetails.patientID, transactionCompleted__exact = 'N', batchNo__exact = webFormFields['batchNo']).get()
                 if (billDetails.noOfTabletsOrdered+int(webFormFields['orderQuantity'])) > medDetails.noOfTabletsToTrf:
@@ -238,6 +234,7 @@ def medicine_order(request, pk):
                 billDetails.batchNo = medDetails.batchNo
                 billDetails.expiryDate = medDetails.expiryDate
                 if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) == 0:
+                    Bill.objects.filter(transactionCompleted__exact= 'N').delete()
                     noOfBills = Bill.objects.values('billNo').annotate(cnt=Count('billNo'))
                     billDetails.billNo = 'SSDS-18-'+str(len(noOfBills))
                     billDetails.billDate = timezone.now()
@@ -280,12 +277,6 @@ def medicine_checkout(request, pk):
         recordToBeUpdatedInPostModel.save()
         recordToBeUpdatedInBillModel.save()
     return render(request, 'pharmacyapp/medicine_checkout.html', {'billGeneration': billGeneration})
-
-@login_required
-def medicine_allremove(request,pk):
-    patientDetail= get_object_or_404(PatientDetail,pk=pk)
-    Bill.objects.filter(patientID__patientID__exact = patientDetail.patientID, transactionCompleted__exact= 'N').delete()
-    return HttpResponseRedirect("/patient/details")
 
 @login_required    
 def medicine_last_checkout(request, pk):
