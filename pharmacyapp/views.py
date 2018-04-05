@@ -408,7 +408,8 @@ def meds_trf(request,pk):
         medsTrf = Post.objects.filter(pk__exact=pk).get()
         if (request.method == "POST" and request.POST.get('medsTrf')):
             webFormFields = request.POST
-            if int(webFormFields['meds2Trf'])>medsTrf.noOfTabletsInStores:
+            quantityToTrf="".join(webFormFields['meds2Trf'].split())
+            if int(quantityToTrf)>medsTrf.noOfTabletsInStores:
                 messages.info(request,"units more than available in stores cant be transferred")
                 return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
             if int(webFormFields['meds2Trf']) <0:
