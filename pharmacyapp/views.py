@@ -409,11 +409,14 @@ def meds_trf(request,pk):
         if (request.method == "POST" and request.POST.get('medsTrf')):
             webFormFields = request.POST
             quantityToTrf="".join(webFormFields['meds2Trf'].split())
+            if (quantityToTrf == ""):
+                messages.info(request,"Hoolala, GOD BLESS U Pls check entry field")
+                return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
+            if (int(webFormFields['meds2Trf']) <0):
+                messages.info(request,"Hoolala, GOD BLESS U Pls check entry field")
+                return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
             if int(quantityToTrf)>medsTrf.noOfTabletsInStores:
                 messages.info(request,"units more than available in stores cant be transferred")
-                return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
-            if int(webFormFields['meds2Trf']) <0:
-                messages.info(request,"Hoolala, GOD BLESS U Pls check entry field")
                 return render(request, 'pharmacyapp/meds_trf.html', {'medsTrf': medsTrf})
             medsTrf.noOfTabletsToTrf = medsTrf.noOfTabletsToTrf+int(webFormFields['meds2Trf'])
             medsTrf.noOfTabletsInStores = medsTrf.noOfTabletsInStores - int(webFormFields['meds2Trf'])
