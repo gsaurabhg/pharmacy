@@ -267,11 +267,20 @@ def medicine_checkout(request, pk):
     patientInfo = get_object_or_404(PatientDetail, pk=pk)
     billGeneration = Bill.objects.all().filter(patientID__patientID__exact = patientInfo.patientID,transactionCompleted__exact = 'N')
     for billDetail in billGeneration:
-        recordToBeUpdatedInPostModel = Post.objects.all().filter(medicineName__exact = billDetail.medicineName, batchNo__exact = billDetail.batchNo).get()
+        recordToBeUpdatedInPostModel = Post.objects.all().filter(medicineName__exact = billDetail.medicineName, \
+        batchNo__exact = billDetail.batchNo).get()
+        if ((recordToBeUpdatedInPostModel.noOfTablets-(recordToBeUpdatedInPostModel.noOfTabletsSold+billDetail.noOfTabletsOrdered)) < 0) or \
+        (recordToBeUpdatedInPostModel.noOfTabletsToTrf - billDetail.noOfTabletsOrdered < 0) :
+                messages.info(request, "pls reduce the amount of medicine " + recordToBeUpdatedInPostModel.medicineName)
+                return render(request, 'pharmacyapp/sideNavigation.html',{'billGeneration': billGeneration})
+    for billDetail in billGeneration:
+        recordToBeUpdatedInPostModel = Post.objects.all().filter(medicineName__exact = billDetail.medicineName, \
+        batchNo__exact = billDetail.batchNo).get()
         recordToBeUpdatedInPostModel.noOfTabletsSold = recordToBeUpdatedInPostModel.noOfTabletsSold + billDetail.noOfTabletsOrdered
         recordToBeUpdatedInPostModel.noOfTabletsToTrf =recordToBeUpdatedInPostModel.noOfTabletsToTrf - billDetail.noOfTabletsOrdered
         
-        recordToBeUpdatedInBillModel = Bill.objects.all().filter(medicineName__exact = billDetail.medicineName, batchNo__exact = billDetail.batchNo, billNo__exact = billDetail.billNo).get()
+        recordToBeUpdatedInBillModel = Bill.objects.all().filter(medicineName__exact = billDetail.medicineName, \
+        batchNo__exact = billDetail.batchNo, billNo__exact = billDetail.billNo).get()
         recordToBeUpdatedInBillModel.transactionCompleted = 'Y'
         
         recordToBeUpdatedInPostModel.save()
