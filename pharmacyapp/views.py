@@ -19,7 +19,9 @@ from django.http import HttpResponse
 #needed for the pass word creae viewitems
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+import logging
 
+logging.basicConfig(filename="test.log", level=logging.DEBUG)
 
 def welcome(request):
     return render(request, 'pharmacyapp/popup.html')
@@ -53,6 +55,9 @@ def post_new(request):
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                 try:
                     medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
+                    logging.debug('entered into the section of adding medicines for same batch')
+                    logging.debug("Number of strips already in stores: {}".format(medicineRecord.quantity) + " Number of tablets/strip: {}" \
+                    .format(medicineRecord.pack) + " batch Number entered: {}".format(medicineRecord.batchNo))
                     "this section is basically if a person is entering more medicines for the same batch no. via new entry"
                     messages.info(request,"Found existing record in the stocks. Updating it")
                     medicineRecord.quantity = post.quantity+medicineRecord.quantity
@@ -61,6 +66,8 @@ def post_new(request):
                     medicineRecord.noOfTabletsInStores = medicineRecord.noOfTablets - medicineRecord.noOfTabletsSold - medicineRecord.noOfTabletsToTrf
                     medicineRecord.netPurchasePrice = medicineRecord.quantity*medicineRecord.pricePerStrip*(1+Decimal(medicineRecord.vat+medicineRecord.sat+medicineRecord.addTax)/100)
                     medicineRecord.save()
+                    logging.debug("Entry by Admin: Number of strips purchased: {}".format(post.quantity) + "Number of tablets/strip: {}".format(post.pack))
+                    logging.debug('-----------------------------------------------------------')
                     return redirect('post_list')
                 except ObjectDoesNotExist:
                     currentDate = datetime.datetime.strptime(str(format(timezone.now(), '%d-%m-%Y')),"%d-%m-%Y") 
@@ -81,6 +88,10 @@ def post_new(request):
                     post.noOfTabletsInStores = int(post.noOfTablets) - int(post.noOfTabletsSold)
                     post.netPurchasePrice = Decimal(post.quantity)*post.pricePerStrip*Decimal((100+int(post.vat)+int(post.sat)+int(post.addTax))/100)
                     post.save()
+                    logging.debug('entered into the section of adding new medicines')
+                    logging.debug("Input entry by Admin: Number of strips in stores: {}".format(post.quantity) + " Number of tablets/strip: {}" \
+                    .format(post.pack) + " batch Number entered: {}".format(post.batchNo))
+                    logging.debug('------------------------------------------------------------------------------------------------')
                     return redirect('post_detail', pk=post.pk)
         else:
             form = PostForm()
