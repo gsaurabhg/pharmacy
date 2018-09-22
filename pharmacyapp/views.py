@@ -123,7 +123,20 @@ def post_edit(request, pk):
             if enteredDate < currentDate:
                 messages.info(request,"enter the proper expiry Date")
                 return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-            post.save()
+            medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
+            if (medicineRecord.pk != post.pk):
+                "this section is basically if a person is editing medicines for the exiting batch no."
+                messages.info(request,"Found existing record in the stocks. Updating it")
+                medicineRecord.quantity = post.quantity+medicineRecord.quantity
+                medicineRecord.freeArticles = int(post.freeArticles)+medicineRecord.freeArticles
+                medicineRecord.noOfTablets = (medicineRecord.quantity+medicineRecord.freeArticles)*medicineRecord.pack
+                medicineRecord.noOfTabletsInStores = medicineRecord.noOfTablets - medicineRecord.noOfTabletsSold - medicineRecord.noOfTabletsToTrf
+                medicineRecord.netPurchasePrice = medicineRecord.quantity*medicineRecord.pricePerStrip*(1+Decimal(medicineRecord.vat+medicineRecord.sat+medicineRecord.addTax)/100)
+                medicineRecord.save()
+                post.delete()
+            else:
+                messages.info(request,"updated the record")
+                post.save()
             return redirect('post_list')
     else:
         form = PostForm(instance=post)
