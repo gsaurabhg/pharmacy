@@ -21,7 +21,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 import logging
 
-logging.basicConfig(filename="test.log", level=logging.DEBUG)
+logging.basicConfig(filename="log.log", level=logging.DEBUG)
 
 def welcome(request):
     return render(request, 'pharmacyapp/popup.html')
@@ -228,7 +228,16 @@ def medicine_order(request, pk):
             messages.info(request,"Please fill proper quantity of medicines ")
             return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
         if  Post.objects.all().filter(medicineName__exact = webFormFields['medicineName'], batchNo__exact = webFormFields['batchNo']):
-            medDetails = Post.objects.all().filter(medicineName__exact = webFormFields['medicineName'], batchNo__exact = webFormFields['batchNo']).get()
+            if len(Post.objects.all().filter(medicineName__exact = webFormFields['medicineName'], batchNo__exact = webFormFields['batchNo'])) > 1 :
+                logging.debug('Found Multiple Records')
+                logging.debug("Multiple Records: Name of Medicine: {}".format(webFormFields['medicineName']) + \
+                " batch Number entered: {}".format(webFormFields['batchNo']))
+                logging.debug('------------------------------------------------------------------------------------------------')
+                messages.info(request,"Please Reach out to Admin as Fault has happen for Medicine: "+ webFormFields['medicineName'])
+                return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
+            else:
+                medDetails = Post.objects.all().filter(medicineName__exact = webFormFields['medicineName'], \
+                batchNo__exact = webFormFields['batchNo']).get()
             if format(medDetails.expiryDate,'%Y-%m-%d') < format(timezone.now(),'%Y-%m-%d'):
                 messages.info(request,"Can Not Sale " + medDetails.medicineName + " medicine as its Expired on "+ format(medDetails.expiryDate,'%Y-%m-%d'))
                 return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
@@ -315,7 +324,11 @@ def medicine_checkout(request, pk):
 def medicine_last_checkout(request, pk):
     patientInfo = get_object_or_404(PatientDetail, pk=pk)
     #To fix the use case of first entry
-    billGeneration = Bill.objects.all().filter(patientID__patientID__exact = patientInfo.patientID,transactionCompleted__exact = 'Y').latest('pk')
+    try:
+        billGeneration = Bill.objects.all().filter(patientID__patientID__exact = patientInfo.patientID,transactionCompleted__exact = 'Y').latest('pk')
+    except ObjectDoesNotExist :
+        messages.info(request,"This is the first time Customer, so no previous Invoice found")
+        return redirect('patient_details')
     billGeneration = Bill.objects.all().filter(billNo__exact = billGeneration.billNo,transactionCompleted__exact = 'Y')
     return render(request, 'pharmacyapp/medicine_checkout.html', {'billGeneration': billGeneration})
     
@@ -376,6 +389,9 @@ def meds_edit(request, pk):
     if request.POST.get('returnMeds'):
         webFormFields = request.POST
         meds2Return = webFormFields['meds2Return']
+        if meds2Return == "" :
+            messages.info(request,"Enter valid number of tablets to be returned")
+            return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
         if billAdjust.returnSales == "Y" :
             messages.info(request,"Medicine already returned. No more allowed")
             return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
