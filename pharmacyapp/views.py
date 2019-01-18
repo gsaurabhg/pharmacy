@@ -480,3 +480,15 @@ def meds_trf(request,pk):
         #posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
         posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
         return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
+
+@login_required
+def meds_null(request):
+    medsNull=Post.objects.all().filter(noOfTabletsSold__gt=0)
+    for medNull in medsNull:
+        wholePack=medNull.noOfTabletsSold//medNull.pack
+        medNull.quantity-=wholePack
+        medNull.noOfTabletsSold-=(wholePack*medNull.pack)
+        medNull.noOfTablets-=(wholePack*medNull.pack)
+        medNull.save()
+    posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
+    return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
