@@ -304,7 +304,8 @@ def medicine_checkout(request, pk):
         batchNo__exact = billDetail.batchNo).get()
         if ((recordToBeUpdatedInPostModel.noOfTablets-(recordToBeUpdatedInPostModel.noOfTabletsSold+billDetail.noOfTabletsOrdered)) < 0) or \
         (recordToBeUpdatedInPostModel.noOfTabletsToTrf - billDetail.noOfTabletsOrdered < 0) :
-                messages.info(request, "pls reduce the amount of medicine " + recordToBeUpdatedInPostModel.medicineName)
+                messages.info(request, "pls reduce the amount of medicine " + recordToBeUpdatedInPostModel.medicineName + " Available: " + \
+                str(recordToBeUpdatedInPostModel.noOfTabletsToTrf))
                 return render(request, 'pharmacyapp/sideNavigation.html',{'billGeneration': billGeneration})
     for billDetail in billGeneration:
         recordToBeUpdatedInPostModel = Post.objects.all().filter(medicineName__exact = billDetail.medicineName, \
@@ -483,6 +484,9 @@ def meds_trf(request,pk):
 
 @login_required
 def meds_null(request):
+    exhaustedMedicines=Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__lt=1).order_by('medicineName')
+    exhaustedMedicines.delete()
+    Bill.objects.all().delete()
     medsNull=Post.objects.all().filter(noOfTabletsSold__gt=0)
     for medNull in medsNull:
         wholePack=medNull.noOfTabletsSold//medNull.pack
@@ -490,5 +494,6 @@ def meds_null(request):
         medNull.noOfTabletsSold-=(wholePack*medNull.pack)
         medNull.noOfTablets-=(wholePack*medNull.pack)
         medNull.save()
+        logging.debug('updated '+ medNull.medicineName)
     posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
     return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
