@@ -484,16 +484,19 @@ def meds_trf(request,pk):
 
 @login_required
 def meds_null(request):
-    exhaustedMedicines=Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__lt=1).order_by('medicineName')
-    exhaustedMedicines.delete()
-    Bill.objects.all().delete()
-    medsNull=Post.objects.all().filter(noOfTabletsSold__gt=0)
-    for medNull in medsNull:
-        wholePack=medNull.noOfTabletsSold//medNull.pack
-        medNull.quantity-=wholePack
-        medNull.noOfTabletsSold-=(wholePack*medNull.pack)
-        medNull.noOfTablets-=(wholePack*medNull.pack)
-        medNull.save()
-        logging.debug('updated '+ medNull.medicineName)
+    #exhaustedMedicines=Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__lt=1).order_by('medicineName')
+    #exhaustedMedicines.delete()
+    #medsNull=Post.objects.all().filter(noOfTabletsSold__gt=0)
+    #for medNull in medsNull:
+    #    wholePack=medNull.noOfTabletsSold//medNull.pack
+    #    medNull.quantity-=wholePack
+    #    medNull.noOfTabletsSold-=(wholePack*medNull.pack)
+    #    medNull.noOfTablets-=(wholePack*medNull.pack)
+    #    medNull.save()
+    #    logging.debug('updated '+ medNull.medicineName)
+    startdate = datetime.strptime('16-02-2018','%d-%m-%Y')
+    enddate = datetime.strptime('31-03-2018','%d-%m-%Y')
+    BillLastFinYear= Bill.objects.filter(returnSalesBillDate__range=[startdate, enddate])
+    BillLastFinYear.objects.all().delete()
     posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
     return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
