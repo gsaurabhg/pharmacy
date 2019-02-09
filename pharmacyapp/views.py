@@ -57,7 +57,9 @@ def post_new(request):
                     medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
                     logging.debug('entered into the section of adding medicines for same batch')
                     logging.debug("Number of strips already in stores: {}".format(medicineRecord.quantity) + " Number of tablets/strip: {}" \
-                    .format(medicineRecord.pack) + " batch Number entered: {}".format(medicineRecord.batchNo))
+                    .format(medicineRecord.pack) + " batch Number entered: {}".format(medicineRecord.batchNo) + " medicine Name: {}" \
+                    .format(medicineRecord.medicineName) + "  freeArticles: {}".format(medicineRecord.freeArticles) +" pack size: {}" \
+                    .format(medicineRecord.pack) + " no of Tablets in Stores: {}".format(medicineRecord.noOfTabletsInStores))
                     "this section is basically if a person is entering more medicines for the same batch no. via new entry"
                     messages.info(request,"Found existing record in the stocks. Updating it")
                     medicineRecord.quantity = post.quantity+medicineRecord.quantity
@@ -90,7 +92,9 @@ def post_new(request):
                     post.save()
                     logging.debug('entered into the section of adding new medicines')
                     logging.debug("Input entry by Admin: Number of strips in stores: {}".format(post.quantity) + " Number of tablets/strip: {}" \
-                    .format(post.pack) + " batch Number entered: {}".format(post.batchNo))
+                    .format(post.pack) + " batch Number entered: {}".format(post.batchNo) + " medicine Name: {}".format(post.medicineName) + \
+                    "  freeArticles: {}".format(post.freeArticles) + " pack size: {}".format(post.pack) + \
+                    " no of Tablets in Stores: {}".format(post.noOfTabletsInStores))
                     logging.debug('------------------------------------------------------------------------------------------------')
                     return redirect('post_detail', pk=post.pk)
         else:
