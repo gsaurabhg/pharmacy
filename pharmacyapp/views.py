@@ -27,7 +27,8 @@ def welcome(request):
     return render(request, 'pharmacyapp/popup.html')
 
 def post_list(request):
-    posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
+    posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter( \
+                                        delta__gt=0,expiryDate__gt=timezone.now()).order_by('medicineName')
     return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
     
 def post_detail(request, pk):
