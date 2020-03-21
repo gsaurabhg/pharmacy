@@ -139,7 +139,12 @@ def post_edit(request, pk):
             if enteredDate < currentDate:
                 messages.info(request,"enter the proper expiry Date")
                 return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-            medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
+            try:
+                medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
+            except ObjectDoesNotExist:
+                logging.debug("SCUM BAG: Medicine entered in edit mode: {}".format(post.medicineName) + \
+                        " Batch No : {}".format(post.batchNo) + " pk value: {}".format(post.pk))
+                return render(request, 'pharmacyapp/post_edit.html', {'form': form})
             if (medicineRecord.pk != post.pk):
                 "this section is basically if a person is editing medicines for the exiting batch no."
                 messages.info(request,"Found existing record in the stocks. Updating it")
