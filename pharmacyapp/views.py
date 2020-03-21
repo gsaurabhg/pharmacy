@@ -274,7 +274,7 @@ def medicine_order(request, pk):
                 if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) == 0:
                     Bill.objects.filter(transactionCompleted__exact= 'N').delete()
                     noOfBills = Bill.objects.values('billNo').annotate(cnt=Count('billNo'))
-                    billDetails.billNo = 'SSDS-18-'+str(len(noOfBills))
+                    billDetails.billNo = 'SSDS-19-'+str(len(noOfBills))
                     billDetails.billDate = timezone.now()
                 else:
                     if len(Bill.objects.all().filter(patientID__patientID__exact = patientDetails.patientID,transactionCompleted__exact = 'N')) > 1 :
