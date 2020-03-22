@@ -142,6 +142,7 @@ def post_edit(request, pk):
             try:
                 medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
             except ObjectDoesNotExist:
+                messages.info(request,"If you want to change the medicine/batch Number, pls go through New Inventory with different batch")
                 logging.debug("SCUM BAG: Medicine entered in edit mode: {}".format(post.medicineName) + \
                         " Batch No : {}".format(post.batchNo) + " pk value: {}".format(post.pk))
                 return render(request, 'pharmacyapp/post_edit.html', {'form': form})
