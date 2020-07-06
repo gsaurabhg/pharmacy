@@ -6,7 +6,7 @@ from decimal import *
 Tax= ((0,0),(4,4),(5,5),(12,12))
 Tax_sat= ((0,0),(1,1),(4,4),(5,5),(12,12))
 class Post(models.Model):
-    pharmacy_user = models.ForeignKey('auth.User')
+    pharmacy_user = models.ForeignKey('auth.User',on_delete=models.CASCADE)
     medicineName = models.CharField("Product Name",max_length=48,blank=False)
     batchNo = models.CharField("Batch Number",max_length=50, blank=False)
     expiryDate = models.DateField("Expiry Date")
@@ -25,7 +25,7 @@ class Post(models.Model):
     noOfTabletsSold = models.PositiveSmallIntegerField(default ='0')
     noOfTabletsInStores = models.PositiveSmallIntegerField(default ='0')
     noOfTabletsToTrf = models.PositiveSmallIntegerField(default ='0')
-    
+
     def publish(self):
         self.save()
 
@@ -40,13 +40,13 @@ class PatientDetail(models.Model):
 
     def publish(self):
         self.save()
-        
+
     def __str__(self):
         return self.patientID
 
 Discount= ((0,0),(5,5),(10,10))
 class Bill(models.Model):
-    patientID = models.ForeignKey(PatientDetail)
+    patientID = models.ForeignKey(PatientDetail,on_delete=models.CASCADE)
     medicineName = models.CharField(max_length=50, blank=True, default='NA')
     billNo = models.CharField(max_length=50)
     billDate = models.DateField("Date Of Purchase",default=timezone.now)
@@ -62,13 +62,13 @@ class Bill(models.Model):
     returnSalesNoOfTablets = models.PositiveSmallIntegerField(default ='0')
     returnSalesBillDate = models.DateField("Date Of Return",default=timezone.now)
     returnDiscountedPrice=models.DecimalField(max_digits=12, decimal_places=2,default ='0',validators=[MinValueValidator(Decimal('0.01'))])
-    
+
 
     def __str__(self):
         return self.billNo
 
 class returnBill(models.Model):
-    originalBillNo = models.ForeignKey(Bill)
+    originalBillNo = models.ForeignKey(Bill,on_delete=models.CASCADE)
     originalPricePerTablet = models.DecimalField(max_digits=5, decimal_places=2,validators=[MinValueValidator(Decimal('0.01'))])
     originalDiscount = models.PositiveSmallIntegerField("Discount (%)")
     returnSalesBillNo = models.CharField(max_length=50)
@@ -80,5 +80,3 @@ class returnBill(models.Model):
     totalReturnAmount = models.DecimalField(max_digits=5, decimal_places=2,validators=[MinValueValidator(Decimal('0.01'))])
     def __str__(self):
         return self.returnSalesBillNo
-    
-    
