@@ -16,9 +16,9 @@ Including another URLconf
     url(r'^accounts/logout/$', django.contrib.auth.views.logout, name='logout', kwargs={'next_page': '/'}),
 
 """
-from django.conf.urls import url
+from django.urls import re_path as url
 from django.contrib import admin
-from django.conf.urls import include
+from django.urls import include
 import django.contrib.auth.views
 
 admin.autodiscover()
