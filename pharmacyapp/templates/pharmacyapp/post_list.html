@@ -26,8 +26,6 @@
 			<th>Tablets/Unit Price</th>
 			{% if user.username == "admin" or user.username == "saurabhg" %}
 			<th>Remaining tablets/units in store</th>
-			<th>Tablets in pharmacy</th>
-			<th>Tablets to transfer</th>
 			{% endif %}
 		</tr>
 		{% for post in posts %}
@@ -42,8 +40,6 @@
 			<td>{{ post.pricePerTablet}}</td>
 			{% if user.username == "admin" or user.username == "saurabhg" %}
 			<td>{{ post.noOfTabletsInStores}}</td>
-			<td>{{post.noOfTabletsToTrf}}</td>
-			<td><a <button type="submit" class="save btn btn-default" href="{% url 'meds_trf' pk=post.pk %}">Add Tablets in Pharmacy</button></a></td>
 			{% endif %}
 		</tr>
 		{% endfor %}
