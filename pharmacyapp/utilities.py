@@ -85,17 +85,27 @@ def generate_pdf(bill_no):
   name2Use=f"<b>Patient name:  {name}</b>"
   heading = Paragraph(name2Use, heading_style)
   elements.append(heading)
-  bill= billGeneration[0].billNo
-  bill2Use=f"<b>Bill No: {bill}</b>"
-  heading = Paragraph(bill2Use, heading_style)
-  billD= billGeneration[0].billDate
-  billD2Use=f"<b>Bill Date: {billD}</b>"
-  heading = Paragraph(billD2Use, heading_style)
-  PNo= billGeneration[0].patientID.patientPhoneNo
-  Phone2Use=f"<b>Bill Date: {PNo}</b>"
-  heading = Paragraph(Phone2Use, heading_style)
-  
+
+  #add Bill Number
+  bill = billGeneration[0].billNo
+  billD = billGeneration[0].billDate
+  billInfo=f"<b>Bill No:</b> {bill}"
+  heading= Paragraph(billInfo, heading_style)
   elements.append(heading)
+  
+  #adding a spacer between bill numbe and bill date
+  elements.append(Spacer(20, 0))
+  
+  #add Bill Date
+  billDInfo=f"<b>Bill Date:</b> {billD}"
+  heading = Paragraph(billDInfo, heading_style)
+  elements.append(heading)
+  
+  #add Patient phone Number
+  PNo= billGeneration[0].patientID.patientPhoneNo
+  Phone2Use=f"<b>Phone Number: {PNo}</b>"
+  heading = Paragraph(Phone2Use, heading_style)
+  elements.append(heading)  
 
 
   # Add data table
