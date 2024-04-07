@@ -72,9 +72,7 @@ def generate_pdf(bill_no):
   elements.append(heading)
 
   heading_style = ParagraphStyle(name='Heading2', parent=styles['Heading2'], alignment=2)  # 2 = Right alignment
-  heading = Paragraph("<b>C1, Vikram Colony,</b>", heading_style)
-  elements.append(heading)
-  heading = Paragraph("<b>Aligarh, Ph.:0571-2972424</b>", heading_style)
+  heading = Paragraph("<b>C1, Vikram Colony, Aligarh, Ph.:0571-2972424</b>", heading_style)
   elements.append(heading)
 
   # Add line separator 
@@ -90,6 +88,13 @@ def generate_pdf(bill_no):
   bill= billGeneration[0].billNo
   bill2Use=f"<b>Bill No: {bill}</b>"
   heading = Paragraph(bill2Use, heading_style)
+  billD= billGeneration[0].billDate
+  billD2Use=f"<b>Bill Date: {billD}</b>"
+  heading = Paragraph(billD2Use, heading_style)
+  PNo= billGeneration[0].patientID.patientPhoneNo
+  Phone2Use=f"<b>Bill Date: {PNo}</b>"
+  heading = Paragraph(Phone2Use, heading_style)
+  
   elements.append(heading)
 
 
