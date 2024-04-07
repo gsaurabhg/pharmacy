@@ -19,7 +19,8 @@ from django.http import HttpResponse
 #needed for the pass word creae viewitems
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-import logging
+import logging 
+from pharmacyapp.utilities import *
 
 logging.basicConfig(filename="log.log", level=logging.DEBUG)
 
@@ -328,7 +329,8 @@ def medicine_checkout(request, pk):
         
         recordToBeUpdatedInPostModel.save()
         recordToBeUpdatedInBillModel.save()
-
+    #passing the bill no to generate the pdf
+    generate_pdf(billGeneration[0].billNo)
     return render(request, 'pharmacyapp/medicine_checkout.html', {'billGeneration': billGeneration})
 
 @login_required    
