@@ -74,7 +74,7 @@ def generate_pdf(bill_no):
   heading_style = ParagraphStyle(name='Heading2', parent=styles['Heading2'], alignment=2)  # 2 = Right alignment
   heading = Paragraph("<b>C1, Vikram Colony,</b>", heading_style)
   elements.append(heading)
-  heading = Paragraph("<b>Aligarh, Ph.:0571-2742424</b>", heading_style)
+  heading = Paragraph("<b>Aligarh, Ph.:0571-2972424</b>", heading_style)
   elements.append(heading)
 
   # Add line separator 
