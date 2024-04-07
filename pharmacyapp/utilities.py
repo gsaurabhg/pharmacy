@@ -10,6 +10,10 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from PyPDF2 import PdfReader, PdfWriter
 
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib import fonts
+
 from pharmacyapp.models import Post, Bill, PatientDetail
 
 
@@ -123,7 +127,20 @@ def generate_pdf(bill_no):
   table.setStyle(style)
   elements.append(table)
 
+  # Register Hindi font
+  pdfmetrics.registerFont(TTFont('HindiFont', 'Hind-Regular.ttf'))
 
+  # Use the Hindi font in your style
+  heading_style.fontName = 'HindiFont'
+  hindiText="""(कट स्ट्रिप को वापस नहीं किया जा सकता है)"""
+  footnote_para=Paragraph(hindiText,heading_style)
+  elements.append(footnote_para)
+  
+  heading_style = ParagraphStyle(name='Heading3', parent=styles['Heading3'], alignment=2)
+  sig=f"(Auth. Signature)"
+  heading=Paragraph(sig, heading_style)
+  elements.append(heading)
+  
   # Build PDF
   doc.build(elements)
   output.close()
