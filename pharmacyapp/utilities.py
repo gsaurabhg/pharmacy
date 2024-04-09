@@ -50,7 +50,7 @@ def generate_pdf(bill_no):
   billGeneration = Bill.objects.filter(billNo__exact=bill_no)
 
   # Define the name of the PDF file
-  pdf_file = "temp.pdf"
+  pdf_file = "./bills/"+bill_no+".pdf"
   output = open(pdf_file, "wb")
 
   # Extract data from the queryset
@@ -128,13 +128,13 @@ def generate_pdf(bill_no):
   elements.append(table)
 
   # Register Hindi font
-  pdfmetrics.registerFont(TTFont('HindiFont', 'Hind-Regular.ttf'))
+  #pdfmetrics.registerFont(TTFont('HindiFont', 'Hind-Regular.ttf'))
 
   # Use the Hindi font in your style
-  heading_style.fontName = 'HindiFont'
-  hindiText="""(कट स्ट्रिप को वापस नहीं किया जा सकता है)"""
-  footnote_para=Paragraph(hindiText,heading_style)
-  elements.append(footnote_para)
+  #heading_style.fontName = 'HindiFont'
+  #hindiText="""(कट स्ट्रिप को वापस नहीं किया जा सकता है)"""
+  #footnote_para=Paragraph(hindiText,heading_style)
+  #elements.append(footnote_para)
   
   heading_style = ParagraphStyle(name='Heading3', parent=styles['Heading3'], alignment=2)
   sig=f"(Auth. Signature)"
@@ -145,6 +145,6 @@ def generate_pdf(bill_no):
   doc.build(elements)
   output.close()
 
-  temp_pdf_path = "temp.pdf"
-  merge_to_bil_path = "bills.pdf"
-  merge_pdf(temp_pdf_path, merge_to_bil_path)
+  #temp_pdf_path = "temp.pdf"
+  #merge_to_bil_path = "bills.pdf"
+  #merge_pdf(temp_pdf_path, merge_to_bil_path)
