@@ -41,19 +41,39 @@ def post_new(request):
     currentDate = datetime.datetime.strptime(str(format(datetime.date.today(), '%d-%m-%Y')),"%d-%m-%Y") 
     if (current_user == "admin" or current_user == "saurabhg"):
         if (request.method == "POST" and request.POST.get('save')):
-            form = PostForm(request.POST)
+            # Create a mutable copy of the QueryDict object
+            mutable_post_data = request.POST.copy()
+
+            # Parse the date string submitted in the POST request for date of purchase
+            date_of_purchase_str = mutable_post_data.get('dateOfPurchase')
+            # Convert the date string to the date format (e.g., 'yyyy-MM-dd')
+            date_of_purchase = datetime.datetime.strptime(date_of_purchase_str, '%Y-%m-%d')
+            # Update the form data with the adjusted date value
+            mutable_post_data['dateOfPurchase'] = date_of_purchase
+
+            # Parse the date string submitted in the POST request for expiry Date
+            expiry_date_str = mutable_post_data.get('expiryDate')
+            # Convert the date string to the date format (e.g., 'yyyy-MM-dd')
+            expiry_date = datetime.datetime.strptime(expiry_date_str, '%Y-%m-%d')
+            # Update the form data with the adjusted date value
+            mutable_post_data['expiryDate'] = expiry_date
+
+            form = PostForm(mutable_post_data)
             if form.is_valid():
                 post = form.save(commit=False)
-                webFormFields = request.POST
-                enteredDate = datetime.datetime.strptime(webFormFields['dateOfPurchaseForm'],'%d-%m-%Y')
-                #enteredDate = datetime.datetime.strptime(str(format(post.dateOfPurchase, '%d-%m-%Y')),"%d-%m-%Y") 
-                if ( enteredDate > currentDate):
-                    messages.info(request,"Purchase Date " + webFormFields['dateOfPurchaseForm'] + " can not be greater than Todays date i.e., " + format(timezone.now(), '%d-%m-%Y'))
+                
+                ###########INPUT PARAMETER VALIDATIONS START################
+                if ( date_of_purchase > currentDate):
+                    messages.info(request,"Purchase Date " + date_of_purchase_str + " can not be greater than Todays date i.e., " + format(timezone.now(), '%d-%m-%Y'))
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-                post.dateOfPurchase= enteredDate
                 if post.pack == 0:
                     messages.info(request,"Number of Tablets/Bottles to be greater than 0")
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+                currentDate = datetime.datetime.strptime(str(format(timezone.now(), '%d-%m-%Y')),"%d-%m-%Y") 
+                if expiry_date < currentDate:
+                    messages.info(request,"Expiry Date can not be less than current date")
+                    return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+                ###########---VALIDATIONS END----################
                 try:
                     medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
                     logging.debug('entered into the section of adding medicines for same batch')
@@ -73,37 +93,32 @@ def post_new(request):
                     logging.debug('-----------------------------------------------------------')
                     return redirect('post_list')
                 except ObjectDoesNotExist:
-                    currentDate = datetime.datetime.strptime(str(format(timezone.now(), '%d-%m-%Y')),"%d-%m-%Y") 
-                    webFormFields = request.POST
                     try:
-                            datetime.datetime.strptime(webFormFields['expiryDateForm'], '%d-%m-%Y')
-                    except ValueError:
-                            messages.info(request,"Expiry Date to be in DD-MM-YYY format")
-                            return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-                    post.expiryDate = datetime.datetime.strptime(webFormFields['expiryDateForm'],'%d-%m-%Y')
-                    enteredExpiryDate = post.expiryDate
-                    if enteredExpiryDate < currentDate:
-                        messages.info(request,"enter the proper expiry Date")
+                        #if by mistake one has entered the wrong medicine name with existing batch then error out.
+                        medicineRecord = Post.objects.all().filter(batchNo__exact = post.batchNo).get()
+                        messages.info(request,"Another Medicine with same Batch No: "+post.batchNo+" exists. Pls check the entered medicine name")
                         return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-                    post.pharmacy_user = request.user
-                    post.noOfTablets = (int(post.quantity)+int(post.freeArticles))*int(post.pack)
-                    post.pricePerTablet = post.mrp/post.pack
-                    post.noOfTabletsInStores = int(post.noOfTablets) - int(post.noOfTabletsSold)
-                    post.netPurchasePrice = Decimal(post.quantity)*post.pricePerStrip*Decimal((100+int(post.vat)+int(post.sat)+int(post.addTax))/100)
-                    post.save()
-                    logging.debug('entered into the section of adding new medicines')
-                    logging.debug("Input entry by Admin: Number of strips in stores: {}".format(post.quantity) + " Number of tablets/strip: {}" \
-                    .format(post.pack) + " batch Number entered: {}".format(post.batchNo) + " medicine Name: {}".format(post.medicineName) + \
-                    "  freeArticles: {}".format(post.freeArticles) + " pack size: {}".format(post.pack) + \
-                    " no of Tablets in Stores: {}".format(post.noOfTabletsInStores))
-                    logging.debug('------------------------------------------------------------------------------------------------')
-                    return redirect('post_detail', pk=post.pk)
+                    except ObjectDoesNotExist:
+                        # falling to this exception means that we havent found the existing record against that batchNo . 
+                        # Medicine name might exist but since its a new batchNo hence new entry
+                        post.pharmacy_user = request.user
+                        post.noOfTablets = (int(post.quantity)+int(post.freeArticles))*int(post.pack)
+                        post.pricePerTablet = post.mrp/post.pack
+                        post.noOfTabletsInStores = int(post.noOfTablets) - int(post.noOfTabletsSold)
+                        post.netPurchasePrice = Decimal(post.quantity)*post.pricePerStrip*Decimal((100+int(post.vat)+int(post.sat)+int(post.addTax))/100)
+                        post.save()
+                        logging.debug('entered into the section of adding new medicines')
+                        logging.debug("Input entry by Admin: Number of strips in stores: {}".format(post.quantity) + " Number of tablets/strip: {}" \
+                        .format(post.pack) + " batch Number entered: {}".format(post.batchNo) + " medicine Name: {}".format(post.medicineName) + \
+                        "  freeArticles: {}".format(post.freeArticles) + " pack size: {}".format(post.pack) + \
+                        " no of Tablets in Stores: {}".format(post.noOfTabletsInStores))
+                        logging.debug('------------------------------------------------------------------------------------------------')
+                        return redirect('post_detail', pk=post.pk)
         else:
             form = PostForm()
         return render(request, 'pharmacyapp/post_edit.html', {'form': form})
     else:
         messages.info(request,"You have to LOG in as ADMIN to use this feature")
-        #posts = Post.objects.filter(dateOfPurchase__lte=timezone.now()).order_by('medicineName')
         posts = Post.objects.all().filter(noOfTabletsInStores__gt=0).order_by('medicineName')
         return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
         
@@ -112,54 +127,112 @@ def post_new(request):
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
+        # Create a mutable copy of the QueryDict object
+        mutable_post_data = request.POST.copy()
+
+        # Check if medicine name or batch is modified and set the flags accordingly
+        medicineNameChanged=0
+        if post.medicineName != mutable_post_data['medicineName']:
+            medicineNameChanged=1
+        batchNoChanged=0
+        if post.batchNo != mutable_post_data['batchNo']:
+            batchNoChanged=1
+
+        # Parse the date string submitted in the POST request for date of purchase
+        date_of_purchase_str = mutable_post_data.get('dateOfPurchase')
+        # Convert the date string to the date format (e.g., 'yyyy-MM-dd')
+        date_of_purchase = datetime.datetime.strptime(date_of_purchase_str, '%Y-%m-%d')
+        # Update the form data with the adjusted date value
+        mutable_post_data['dateOfPurchase'] = date_of_purchase
+
+        # Parse the date string submitted in the POST request for expiry Date
+        expiry_date_str = mutable_post_data.get('expiryDate')
+        # Convert the date string to the date format (e.g., 'yyyy-MM-dd')
+        expiry_date = datetime.datetime.strptime(expiry_date_str, '%Y-%m-%d')
+        # Update the form data with the adjusted date value
+        mutable_post_data['expiryDate'] = expiry_date
+        
+        form = PostForm(mutable_post_data, instance=post)
         if form.is_valid():
+            ############## Input Validation Starts #################
+            #Check-1: for 0 medicine per strip
             if post.pack == 0:
                 messages.info(request,"Number of Tablets/Bottles to be greater than 0")
                 return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+
+            #Check-2: date of purchase cant be greater than todays date
             currentDate = datetime.datetime.strptime(str(format(timezone.now(), '%d-%m-%Y')),"%d-%m-%Y") 
             enteredDate = datetime.datetime.strptime(str(format(post.dateOfPurchase, '%d-%m-%Y')),"%d-%m-%Y") 
             if ( enteredDate > currentDate):
                 messages.info(request,"Purchase Date " + format(post.dateOfPurchase, '%d-%m-%Y') + " can not be greater than Todays date i.e., " + format(timezone.now(), '%d-%m-%Y'))
                 return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-            post.pharmacy_user = request.user
-            post.noOfTablets = (post.quantity+post.freeArticles)*post.pack
-            post.pricePerTablet = post.mrp/post.pack
+
+            #Check-3: If total medicine is less than total sold.
             post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold
-            post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat+post.sat+post.addTax)/100)
-            webFormFields = request.POST
-            try:
-                datetime.datetime.strptime(webFormFields['expiryDateForm'], '%d-%m-%Y')
-            except ValueError:
-                messages.info(request,"Expiry Date to be in DD-MM-YYY format")
+            if post.noOfTabletsInStores < 0:
+                messages.info(request,"You are trying to adjust the quantity of the medicine to a lower amount i.e., "+str(post.noOfTablets)+" tablets than what you have already sold: "+ str(post.noOfTabletsSold))
+                messages.info(request,"===> Operation Not Allowed")
                 return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-                
-            post.expiryDate = datetime.datetime.strptime(webFormFields['expiryDateForm'],'%d-%m-%Y')
-            enteredDate = post.expiryDate
-            if enteredDate < currentDate:
-                messages.info(request,"enter the proper expiry Date")
-                return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-            try:
-                medicineRecord = Post.objects.all().filter(medicineName__exact=post.medicineName,batchNo__exact = post.batchNo).get()
-            except ObjectDoesNotExist:
-                messages.info(request,"If you want to change the medicine/batch Number, pls go through New Inventory with different batch")
-                logging.debug("SCUM BAG: Medicine entered in edit mode: {}".format(post.medicineName) + \
-                        " Batch No : {}".format(post.batchNo) + " pk value: {}".format(post.pk))
-                return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-            if (medicineRecord.pk != post.pk):
-                "this section is basically if a person is editing medicines for the exiting batch no."
-                messages.info(request,"Found existing record in the stocks. Updating it")
-                medicineRecord.quantity = post.quantity+medicineRecord.quantity
-                medicineRecord.freeArticles = int(post.freeArticles)+medicineRecord.freeArticles
-                medicineRecord.noOfTablets = (medicineRecord.quantity+medicineRecord.freeArticles)*medicineRecord.pack
-                medicineRecord.noOfTabletsInStores = medicineRecord.noOfTablets - medicineRecord.noOfTabletsSold
-                medicineRecord.netPurchasePrice = medicineRecord.quantity*medicineRecord.pricePerStrip*(1+Decimal(medicineRecord.vat+medicineRecord.sat+medicineRecord.addTax)/100)
-                medicineRecord.save()
-                post.delete()
-            else:
-                messages.info(request,"updated the record")
+            ############## Input Validation Ends #################
+           
+            # Checking if any of the fields are changed
+            if (batchNoChanged==1 and medicineNameChanged ==1) or (batchNoChanged==1 and medicineNameChanged ==0):
+                #since both are modified so find the record with modified batch number
+                try:
+                    #execution here means we have found a record with matching batch no.
+                    matching_records = Post.objects.filter(Q(batchNo=form.cleaned_data['batchNo'])).exclude(pk=post.pk)
+                    if len(matching_records) > 1:
+                        messages.info(request,"Pls contact system Admin since you have more than one medicine with same batch No.: "+ form.cleaned_data['batchNo'])
+                        return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+                    else:
+                        # execution here means we found exactly 1 entry in database which matches with the batchNo. 
+                        if (matching_records.medicineName != form.cleaned_data['medicineName']):
+                            # In the if statement, additional check is not made to check if the medicine name is modified or not because if its not modified then
+                            # we have to ensure that medicine name should match else we should return. If medicine name is modified than the modified name should match
+                            # the one in records hence if its not matching then we should return the error. therefore, no check is made. previously i did made it but
+                            # removed it due to this logic.
+                            messages.info(request,"Pls check form entry since you are trying to modify batchNo but medicine name in records is different than " +  \
+                            "what is entered in the form. "+ matching_records.medicineName + " in database vs "+ form.cleaned_data['medicineName']+ " in form.")
+                            return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+                        else:
+                            # execution here means medicine name is matching and hence we should just update the one in the database and delete the one against the pk
+                            matching_records.quantity = post.quantity+matching_records.quantity
+                            matching_records.freeArticles = post.freeArticles+matching_records.freeArticles
+                            matching_records.noOfTablets = (matching_records.quantity+matching_records.freeArticles)*matching_records.pack
+                            matching_records.noOfTabletsInStores = matching_records.noOfTablets - matching_records.noOfTabletsSold - post.noOfTabletsSold
+                            matching_records.save()
+                            post.delete()
+                            messages.info(request,"Modification done is matching with existing batch hence updating the record and deleting this entry")
+                            return render('post_list')
+                except ObjectDoesNotExist:
+                    # else we dont find the existing record wrt batch number it means, its a new entry.so just save and exit
+                    post.noOfTablets=(post.quantity+post.freeArticles)*post.pack
+                    post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold
+                    if ((post.mrp != form.cleaned_data['mrp']) or (post.pricePerStrip != form.cleaned_data['pricePerStrip'])) and (post.noOfTabletsSold == 0):
+                        # basically if we are trying to change the mrp, then allow only when in past no tablets were sold else it will create problems
+                        post.pricePerTablet = post.mrp/post.pack
+                        post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat+post.sat+post.addTax)/100)
+                    elif ((post.mrp != form.cleaned_data['mrp']) or (post.pricePerStrip != form.cleaned_data['pricePerStrip'])) and (post.noOfTabletsSold >0):
+                        messages.info(request,"Can not update the MRP since in past few tablets were already sold")
+                        return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+                    messages.info(request,"Batch Changed-3, new entry flow")
+                    post.save()
+            elif (batchNoChanged==0 and medicineNameChanged ==1) or (batchNoChanged==0 and medicineNameChanged ==0):
+                # find the records with batch number and allow the change in the medicine name along with other records
+                post.noOfTablets=(post.quantity+post.freeArticles)*post.pack
+                post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold
+                if ((post.mrp != form.cleaned_data['mrp']) or (post.pricePerStrip != form.cleaned_data['pricePerStrip'])) and (post.noOfTabletsSold == 0):
+                    # basically if we are trying to change the mrp, then allow only when in past no tablets were sold else it will create problems
+                    post.pricePerTablet = post.mrp/post.pack
+                    post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat+post.sat+post.addTax)/100)
+                elif ((post.mrp != form.cleaned_data['mrp']) or (post.pricePerStrip != form.cleaned_data['pricePerStrip'])) and (post.noOfTabletsSold >0):
+                    messages.info(request,"Can not update the MRP since in past few tablets were already sold")
+                    return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                 post.save()
+            messages.info(request,"updated the record?")
             return redirect('post_list')
+        else:
+            form = PostForm(request.POST, instance=post)
     else:
         form = PostForm(instance=post)
     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
