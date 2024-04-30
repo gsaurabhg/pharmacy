@@ -1,92 +1,132 @@
 {% load static %}
 
 <html>
-    <head>
-        <title>Shree Sai Drug Shop</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" media="screen">
-        <link rel="stylesheet" href="{% static 'css/bootstrap-responsive.css' %}">
-        <link rel="stylesheet" href="{% static 'css/pharmacyapp.css' %}">
-    </head>
-    <body>
-		<div class="navbar navbar-fixed-top" >
-		   <div class="navbar-inner">
-			   <div class="container">
-				   <a class="brand" href="/">Shree Sai Drug Shop</a>
-				   <div class="nav-collapse collapse">
-						<ul class="nav pull-right">
-						   {% if user.is_authenticated %}
-								<li class="navbar-text">Hello, {{ user.username }}!</li>
-								<li><a href="{% url 'logout' %}">Logout</a></li>
-						   {% else %}
-								<li><a href="{% url 'login' %}"> Log In</a></li>
-								<li> <a>Hello Guest </a></li>
-								<a <button type="submit" class="save btn btn-default" href="/">Home</button></a>
-						   {% endif %}
-						</ul>
-						<ul class="nav navbar-nav">
-						  <li><a href="/">Home</a></li>
-						  {% if user.is_authenticated %}
-						  		<li><a href="{% url 'post_list' %}">Inventory</a></li>
-								<li><a href="{% url 'patient_details' %}">Bill</a></li>
-								<li class="dropdown">
-								<a class="dropdown-toggle" data-toggle="dropdown" href="/">Report
-								        <span class="caret"></span></a>
-								        <ul class="dropdown-menu">
-								          <li><a href="{% url 'report_sales' %}">Sales</a></li>
-								          <li><a href="{% url 'report_returns' %}">Return</a></li>
-								        </ul>
-									    </li>
-                                <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="/">Admin
-							        <span class="caret"></span></a>
-							        <ul class="dropdown-menu">
-							          <li><a href="{% url 'meds_null' %}">Reset</a></li>
-							        </ul>
-                                      </li>
-						  {% endif %}
-						</ul>
-				   </div>
-				   <!--/.nav-collapse -->
-			   </div>
-		   </div>
-		</div>
-        <div class="content container">
-            <div class="row">
-                <div class="col-md-8">
-                    {% block content %}
-                    {% endblock %}
-                </div>
-            </div>
+<head>
+    <title>Shree Sai Drug Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" media="screen"> -->
+    <link rel="stylesheet" href="{% static 'css/pharmacyapp.css' %}">
+    <style>
+        /* Custom CSS */
+        @media screen and (max-width: 768px) {
+            /* Adjustments for screens smaller than 768px */
+            .navbar-brand {
+                font-size: 18px;
+            }
+            .navbar-nav {
+                margin-top: 10px; /* Add some spacing */
+            }
+            .navbar-nav .nav-link {
+                padding: 5px 10px; /* Adjust padding for better touch experience */
+            }
+            .footer {
+                margin-top: 20px; /* Add some spacing to the footer */
+            }
+        }
+    </style>
+</head>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span9" style="padding: 20px;"> <!-- Adjust the padding value as needed -->
+            {% block body_block %}
+
+            {% endblock %}
         </div>
+    </div>
+</div>
 
-        <div class="container-fluid">
-		    <div class="row-fluid">
-		        <div class="span9">
-				{% block body_block %}
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-2">
+            <!-- Sidebar content here -->
+                        <ul class="navbar-nav ml-auto">
+			                {% if user.is_authenticated %}
+			                    <ul class="nav-item">
+			                        <span class="navbar-text">Hello, {{ user.username }}!</span>
+			                    </ul>
+			                    <ul class="nav-item">
+			                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+			                    </ul>
+			                {% else %}
+			                    <ul class="nav-item">
+			                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+			                    </ul>
+			                    <ul class="nav-item">
+			                        <a class="nav-link" href="/">Hello Guest</a>
+			                    </ul>
+			                {% endif %}
+			            </ul>
 
-				{% endblock %}
-				</div>
-		        <!--/span-->
-		    </div>
-		    <!--/row-->
-		</div>
-		<!--/.fluid-container-->
-		<footer>
-			<div class="container">
-				<p>&copy; SauraBhoomija </p>
-			</div>
-		</footer>
+        </div>
+        <div class="col-lg-10">
+            <!-- Main content here -->
+        </div>
+    </div>
+</div>
 
-        <script type="text/javascript" src="{% static 'js/jquery-3.1.0.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Shree Sai Drug Shop</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <ul class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </ul>
+                {% if user.is_authenticated %}
+                    <ul class="nav-item">
+                        <a class="nav-link" href="{% url 'post_list' %}">Inventory</a>
+                    </ul>
+                    <ul class="nav-item">
+                        <a class="nav-link" href="{% url 'patient_details' %}">Bill</a>
+                    </ul>
+                    <ul class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdownReport" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Report
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownReport">
+                            <li class="nav-item"> <a class="nav-link" href="{% url 'report_sales' %}">Sales</a></li>
+                            <li class="nav-item "> <a class="nav-link" href="{% url 'report_returns' %}">Return</a></li>
+                        </ul>
+                    </ul>
+                    <ul class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdownAdmin" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Admin
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+                            <li class="nav-item"> <a class="nav-link" href="{% url 'meds_null' %}">Reset</a></li>
+                        </ul>
+                    </ul>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
 
-		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}"/>
-        <link rel="stylesheet" type="text/css" href="{% static 'DataTables/datatables.min.css' %}"/>
-        <script type="text/javascript" src="{% static 'DataTables/datatables.min.js' %}"></script>
-		<script type="text/javascript" src="{% static 'js/jscript-queries.js' %}"></script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
 
 
-    </body>
+<footer class="footer">
+    <div class="container">
+        <p>&copy; SauraBhoomija</p>
+    </div>
+</footer>
+
+<script src="{% static 'js/jquery-3.1.0.js' %}"></script>
+<script src="{% static 'js/jquery-ui.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+<link rel="stylesheet" href="{% static 'DataTables/datatables.min.css' %}">
+<script src="{% static 'DataTables/datatables.min.js' %}"></script>
+<script src="{% static 'js/jscript-queries.js' %}"></script>
+</body>
 </html>
