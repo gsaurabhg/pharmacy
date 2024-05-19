@@ -5,11 +5,12 @@ from decimal import *
 
 Tax= ((0,0),(4,4),(5,5),(12,12))
 Tax_sat= ((0,0),(1,1),(4,4),(5,5),(12,12))
+cat = (("Select","Select"),("Ob-Gyn","Ob-Gyn"),("Urology","Urology"),("General Medicine","General Medicine"))
 class Post(models.Model):
     pharmacy_user = models.ForeignKey('auth.User',on_delete=models.CASCADE)
     medicineName = models.CharField("Product Name",max_length=48,blank=False)
+    medCategory = models.CharField("Select Category",max_length=48,choices=cat,default ='Select')
     batchNo = models.CharField("Batch Number",max_length=50, blank=False)
-    expiryDate = models.DateField("Expiry Date")
     pack = models.PositiveSmallIntegerField("No. of tablets per strip/bottle",default ='1')
     freeArticles = models.PositiveSmallIntegerField("Free Sample (Strips/Bottle/pack)",default ='0')
     quantity = models.PositiveSmallIntegerField("Number of strips/pieces purchased")
@@ -17,6 +18,7 @@ class Post(models.Model):
     netPurchasePrice = models.DecimalField(max_digits=8, decimal_places=2,validators=[MinValueValidator(Decimal('0.01'))])
     mrp = models.DecimalField("M.R.P.",max_digits=8, decimal_places=2,validators=[MinValueValidator(Decimal('0.01'))])
     dateOfPurchase = models.DateField("Date Of Purchase",default=timezone.now)
+    expiryDate = models.DateField("Expiry Date")
     vat = models.PositiveSmallIntegerField("VAT (%)",choices=Tax,default ='0')
     sat = models.PositiveSmallIntegerField("SAT (%)",choices=Tax_sat,default ='0')
     addTax = models.PositiveSmallIntegerField("Additional Taxes (%)",default ='0')

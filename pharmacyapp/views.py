@@ -221,6 +221,10 @@ def post_edit(request, pk):
                 # find the records with batch number and allow the change in the medicine name along with other records
                 post.noOfTablets=(post.quantity+post.freeArticles)*post.pack
                 post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold
+                if (post.noOfTabletsInStores < 0):
+                    # it means that you are changing a pack size to a lower number and you have already sold beyond what you have purchased hence dont allow to change the pack size
+                    messages.info(request,"Can not update the Pack Size as its is showing more tab sold than purchased")
+                    return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                 if ((post.mrp != form.cleaned_data['mrp']) or (post.pricePerStrip != form.cleaned_data['pricePerStrip'])) and (post.noOfTabletsSold == 0):
                     # basically if we are trying to change the mrp, then allow only when in past no tablets were sold else it will create problems
                     post.pricePerTablet = post.mrp/post.pack

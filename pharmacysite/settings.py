@@ -114,7 +114,7 @@ USE_I18N = True
 
 
 
-#USE_TZ = True
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -130,3 +130,7 @@ SESSION_COOKIE_AGE = 100000
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'dbbackup')
 DBBACKUP_FILESYSTEM_DIRECTORY = {'location': MEDIA_ROOT}
+# settings.py
+
+# Add this line at the end of the file
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
