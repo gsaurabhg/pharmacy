@@ -39,11 +39,13 @@ class PatientForm(forms.ModelForm):
 
 
 Discount= ((0,0),(5,5),(10,10))
+cat = (("Select","Select"),("Ob-Gyn","Ob-Gyn"),("Urology","Urology"),("General Medicine","General Medicine"))
 class availableMedsForm(forms.Form):
     def __init__(self, medicineNameChoices,*args, **kwargs):
         super(availableMedsForm, self).__init__(*args, **kwargs)
         self.fields['medicineName'].choices = medicineNameChoices
     medicineName = forms.ChoiceField(label='Medicine Name',choices=(), required=True)
+    medCategory = forms.ChoiceField(label='Select Category',choices=cat, required=True)
     orderQuantity = forms.DecimalField(label='Enter the quantity', required=False)
     batchNo = forms.CharField(label='Batch Number:',max_length=128,required=True)
     discount = forms.ChoiceField(label='Discount:',choices=Discount, required=True)
