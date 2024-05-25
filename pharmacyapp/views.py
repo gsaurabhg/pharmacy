@@ -30,6 +30,18 @@ def welcome(request):
 def post_list(request):
     posts = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now()).order_by('medicineName')
     return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
+    #Ob_Gyn =  Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='Ob-Gyn').order_by('medicineName')
+    #Urology = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='Urology').order_by('medicineName')
+    #Common = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='General Medicine').order_by('medicineName')
+    #expired_nill = Post.objects.all().filter(Q(noOfTabletsInStores=0) | Q(expiryDate__lt=timezone.now())).order_by('medicineName')
+
+    #return render(request, 'pharmacyapp/post_list.html', {
+    #    'Ob_Gyn': Ob_Gyn,
+    #    'Urology' : Urology,
+    #    'Common' : Common,
+    #    'expired_nill' : expired_nill
+    #})
+
     
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -68,6 +80,9 @@ def post_new(request):
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                 if post.pack == 0:
                     messages.info(request,"Number of Tablets/Bottles to be greater than 0")
+                    return render(request, 'pharmacyapp/post_edit.html', {'form': form})
+                if post.quantity == 0:
+                    messages.info(request,"Number of strips/pieces purchased to be greater than 0")
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                 currentDate = datetime.datetime.strptime(str(format(timezone.now(), '%d-%m-%Y')),"%d-%m-%Y") 
                 if expiry_date < currentDate:
@@ -126,6 +141,14 @@ def post_new(request):
 @login_required
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    post_copy_data = {}
+    # List of attributes to copy
+    attributes_to_copy = ['pharmacy_user','medicineName','medCategory','batchNo','pack','freeArticles','quantity','pricePerStrip','netPurchasePrice','mrp','dateOfPurchase','expiryDate','vat','sat','addTax','noOfTablets','pricePerTablet','noOfTabletsSold','noOfTabletsInStores','noOfTabletsToTrf']
+
+    # Loop through the attributes and copy their values
+    for attr_name in attributes_to_copy:
+        post_copy_data[attr_name] = getattr(post, attr_name)
+
     if request.method == "POST":
         # Create a mutable copy of the QueryDict object
         mutable_post_data = request.POST.copy()
@@ -151,7 +174,6 @@ def post_edit(request, pk):
         expiry_date = datetime.datetime.strptime(expiry_date_str, '%Y-%m-%d')
         # Update the form data with the adjusted date value
         mutable_post_data['expiryDate'] = expiry_date
-        
         form = PostForm(mutable_post_data, instance=post)
         if form.is_valid():
             ############## Input Validation Starts #################
@@ -174,7 +196,6 @@ def post_edit(request, pk):
                 messages.info(request,"===> Operation Not Allowed")
                 return render(request, 'pharmacyapp/post_edit.html', {'form': form})
             ############## Input Validation Ends #################
-           
             # Checking if any of the fields are changed
             if (batchNoChanged==1 and medicineNameChanged ==1) or (batchNoChanged==1 and medicineNameChanged ==0):
                 #since both are modified so find the record with modified batch number
@@ -208,11 +229,12 @@ def post_edit(request, pk):
                     # else we dont find the existing record wrt batch number it means, its a new entry.so just save and exit
                     post.noOfTablets=(post.quantity+post.freeArticles)*post.pack
                     post.noOfTabletsInStores = post.noOfTablets - post.noOfTabletsSold
-                    if ((post.mrp != form.cleaned_data['mrp']) or (post.pricePerStrip != form.cleaned_data['pricePerStrip'])) and (post.noOfTabletsSold == 0):
+                    if ((post_copy_data['mrp'] != form.cleaned_data['mrp']) or (post_copy_data['pricePerStrip'] != form.cleaned_data['pricePerStrip'])) and (post_copy_data['noOfTabletsSold'] == 0):
                         # basically if we are trying to change the mrp, then allow only when in past no tablets were sold else it will create problems
                         post.pricePerTablet = post.mrp/post.pack
                         post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat+post.sat+post.addTax)/100)
-                    elif ((post.mrp != form.cleaned_data['mrp']) or (post.pricePerStrip != form.cleaned_data['pricePerStrip'])) and (post.noOfTabletsSold >0):
+                        messages.info(request,"Updated MRP or Prise per Strip")
+                    elif ((post_copy_data['mrp'] != form.cleaned_data['mrp']) or (post_copy_data['pricePerStrip'] != form.cleaned_data['pricePerStrip'])) and (post_copy_data['noOfTabletsSold'] >0):
                         messages.info(request,"Can not update the MRP since in past few tablets were already sold")
                         return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                     messages.info(request,"Batch Changed-3, new entry flow")
@@ -225,15 +247,16 @@ def post_edit(request, pk):
                     # it means that you are changing a pack size to a lower number and you have already sold beyond what you have purchased hence dont allow to change the pack size
                     messages.info(request,"Can not update the Pack Size as its is showing more tab sold than purchased")
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
-                if ((post.mrp != form.cleaned_data['mrp']) or (post.pricePerStrip != form.cleaned_data['pricePerStrip'])) and (post.noOfTabletsSold == 0):
+                if ((post_copy_data['mrp'] != form.cleaned_data['mrp']) or (post_copy_data['pricePerStrip'] != form.cleaned_data['pricePerStrip'])) and (post_copy_data['noOfTabletsSold'] == 0):
                     # basically if we are trying to change the mrp, then allow only when in past no tablets were sold else it will create problems
                     post.pricePerTablet = post.mrp/post.pack
                     post.netPurchasePrice = post.quantity*post.pricePerStrip*(1+Decimal(post.vat+post.sat+post.addTax)/100)
-                elif ((post.mrp != form.cleaned_data['mrp']) or (post.pricePerStrip != form.cleaned_data['pricePerStrip'])) and (post.noOfTabletsSold >0):
+                    messages.info(request,"Updated MRP or Prise per Strip")
+                elif ((post_copy_data['mrp'] != form.cleaned_data['mrp']) or (post_copy_data['pricePerStrip'] != form.cleaned_data['pricePerStrip'])) and (post_copy_data['noOfTabletsSold'] >0):
                     messages.info(request,"Can not update the MRP since in past few tablets were already sold")
                     return render(request, 'pharmacyapp/post_edit.html', {'form': form})
                 post.save()
-            messages.info(request,"updated the record?")
+            messages.info(request,"!updated the record")
             return redirect('post_list')
         else:
             form = PostForm(request.POST, instance=post)
