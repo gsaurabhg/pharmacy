@@ -50,7 +50,7 @@ def post_detail(request, pk):
 @login_required    
 def post_new(request):
     current_user = request.user.username
-    currentDate = datetime.datetime.strptime(str(format(datetime.date.today(), '%d-%m-%Y')),"%d-%m-%Y") 
+    currentDate = datetime.datetime.now().date()
     if (current_user == "admin" or current_user == "saurabhg"):
         if (request.method == "POST" and request.POST.get('save')):
             # Create a mutable copy of the QueryDict object
@@ -59,7 +59,8 @@ def post_new(request):
             # Parse the date string submitted in the POST request for date of purchase
             date_of_purchase_str = mutable_post_data.get('dateOfPurchase')
             # Convert the date string to the date format (e.g., 'yyyy-MM-dd')
-            date_of_purchase = datetime.datetime.strptime(date_of_purchase_str, '%Y-%m-%d')
+            date_of_purchase_time = datetime.datetime.strptime(date_of_purchase_str, '%Y-%m-%d')
+            date_of_purchase=date_of_purchase_time.date()
             # Update the form data with the adjusted date value
             mutable_post_data['dateOfPurchase'] = date_of_purchase
 
