@@ -15,34 +15,41 @@
 		{% endfor %}
 	</h2>
 	{% endif %}
+    <caption><h1>Products in Stock</h1></caption>
 
-	</body>
-	<table>
-		<caption><h1>Products in Stock</h1></caption>
-		<tr>
-			<th>Product Name</th>
-			<th>Batch No</th>
-			<th>Date of Expiry</th>
-			<th>Tablets/Unit Price</th>
-			{% if user.username == "admin" or user.username == "saurabhg" %}
-			<th>Remaining tablets/units in store</th>
-			{% endif %}
-		</tr>
-		{% for post in posts %}
-		<tr>
-			{% if user.username == "admin" or user.username == "saurabhg" %}
-			<td><a href="{% url 'post_detail' pk=post.pk %}">{{ post.medicineName }}</a></td>
-			{% else %}
-			<td>{{ post.medicineName }}</td>
-			{% endif %}
-			<td>{{ post.batchNo }}</td>
-			<td>{{ post.expiryDate}}</td>
-			<td>{{ post.pricePerTablet}}</td>
-			{% if user.username == "admin" or user.username == "saurabhg" %}
-			<td>{{ post.noOfTabletsInStores}}</td>
-			{% endif %}
-		</tr>
-		{% endfor %}
-		</table>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" id="Ob_Gyn-tab" data-toggle="tab" href="#Ob_Gyn">Ob_Gyn</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="Urology-tab" data-toggle="tab" href="#Urology">Urology</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="Common-tab" data-toggle="tab" href="#Common">General Medicine</a>
+        </li>
+        <li class="nav-item">
+		    <a class="nav-link" id="expired_nill-tab" data-toggle="tab" href="#expired_nill">Expired or Out Of Stock</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="Ob_Gyn" class="tab-pane show active">
+            <!-- Content for Obs and Gyn -->
+            {% include 'pharmacyapp/med_list.html' with posts=Ob_Gyn %}
+        </div>
+        <div id="Urology" class="tab-pane fade">
+            <!-- Content for Urology -->
+            {% include 'pharmacyapp/med_list.html' with posts=Urology %}
+        </div>
+        <div id="Common" class="tab-pane fade">
+            <!-- Content for General Medicines-->
+            {% include 'pharmacyapp/med_list.html' with posts=Common %}
+        </div>
+        <div id="expired_nill" class="tab-pane fade">
+			<!-- Content for expired or out of stock medicine -->
+			{% include 'pharmacyapp/med_list.html' with posts=expired_nill %}
+        </div>
+    </div>
+
 
 {% endblock body_block%}

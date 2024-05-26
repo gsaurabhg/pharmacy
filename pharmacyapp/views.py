@@ -28,19 +28,19 @@ def welcome(request):
     return render(request, 'pharmacyapp/popup.html')
 
 def post_list(request):
-    posts = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now()).order_by('medicineName')
-    return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
-    #Ob_Gyn =  Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='Ob-Gyn').order_by('medicineName')
-    #Urology = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='Urology').order_by('medicineName')
-    #Common = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='General Medicine').order_by('medicineName')
-    #expired_nill = Post.objects.all().filter(Q(noOfTabletsInStores=0) | Q(expiryDate__lt=timezone.now())).order_by('medicineName')
+    #posts = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now()).order_by('medicineName')
+    #return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
+    Ob_Gyn =  Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='Ob-Gyn').order_by('medicineName')
+    Urology = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='Urology').order_by('medicineName')
+    Common = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='General Medicine').order_by('medicineName')
+    expired_nill = Post.objects.all().filter(Q(noOfTabletsInStores=0) | Q(expiryDate__lt=timezone.now())).order_by('medicineName')
 
-    #return render(request, 'pharmacyapp/post_list.html', {
-    #    'Ob_Gyn': Ob_Gyn,
-    #    'Urology' : Urology,
-    #    'Common' : Common,
-    #    'expired_nill' : expired_nill
-    #})
+    return render(request, 'pharmacyapp/post_list.html', {
+        'Ob_Gyn': Ob_Gyn,
+        'Urology' : Urology,
+        'Common' : Common,
+        'expired_nill' : expired_nill
+    })
 
     
 def post_detail(request, pk):

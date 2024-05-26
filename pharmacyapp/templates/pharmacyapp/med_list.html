@@ -1,0 +1,30 @@
+<table id="stock-table">
+    <thead>
+		<tr>
+		  <th onclick="sortTable(0)">Product Name<span class="sort-icon"></span></th>
+		  <th onclick="sortTable(1)">Batch No<span class="sort-icon"></span></th>
+		  <th onclick="sortTable(2)">Date of Expiry<span class="sort-icon"></span></th>
+		  <th onclick="sortTable(3)">Tablets/Unit Price<span class="sort-icon"></span></th>
+		  {% if user.username == "admin" or user.username == "saurabhg" %}
+		  <th onclick="sortTable(4)">Remaining tablets/units in store<span class="sort-icon"></span></th>
+		  {% endif %}
+		</tr>
+    </thead>
+    <tbody>
+    {% for post in posts %}
+    <tr>
+      {% if user.username == "admin" or user.username == "saurabhg" %}
+      <td><a href="{% url 'post_detail' pk=post.pk %}">{{ post.medicineName }}</a></td>
+      {% else %}
+      <td>{{ post.medicineName }}</td>
+      {% endif %}
+      <td>{{ post.batchNo }}</td>
+      <td>{{ post.expiryDate}}</td>
+      <td>{{ post.pricePerTablet}}</td>
+      {% if user.username == "admin" or user.username == "saurabhg" %}
+      <td>{{ post.noOfTabletsInStores}}</td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
