@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^$', views.welcome, name='welcome'),
     url(r'^list$', views.post_list, name='post_list'),
     url(r'^post/(?P<pk>\d+)/$', views.post_detail, name='post_detail'),
+    url(r'^med/(?P<pk>\d+)/$', views.med_delete, name='med_delete'),
     url(r'^post/new/$', views.post_new, name='post_new'),
     url(r'^post/report/sales/$', views.report_sales, name='report_sales'),
     url(r'^post/report/returns/$', views.report_returns, name='report_returns'),

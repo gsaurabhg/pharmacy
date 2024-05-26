@@ -10,7 +10,6 @@
 		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}"/>
 		<link rel="stylesheet" type="text/css" href="{% static 'DataTables/datatables.min.css' %}"/>
 
-		<script type="text/javascript" src="{% static 'js/jscript-queries.js' %}"></script>
 		<script type="text/javascript" src="{% static 'js/jquery-3.1.0.js' %}"></script>
 		<script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
 		<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -92,6 +91,8 @@
 				<p>&copy; SauraBhoomija </p>
 			</div>
 		</footer>
+		<script>var timestamp = new Date().getTime();</script>
+		<script type="text/javascript" src="{% static 'js/jscript-queries.js' %}?v={{ timestamp }}"></script>
 
     </body>
 </html>

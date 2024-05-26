@@ -213,4 +213,9 @@ function printReturnInvoice(divName) {
      document.body.innerHTML = originalContents;
 }
 
+function confirmDelete(medicineName) {
+    var result = confirm("Are you sure you want to delete the medicine '" + medicineName + "'?");
+    return result;
+}
+
 console.log('End of Java script loading')

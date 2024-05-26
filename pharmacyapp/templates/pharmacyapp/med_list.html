@@ -7,6 +7,7 @@
 		  <th onclick="sortTable(3)">Tablets/Unit Price<span class="sort-icon"></span></th>
 		  {% if user.username == "admin" or user.username == "saurabhg" %}
 		  <th onclick="sortTable(4)">Remaining tablets/units in store<span class="sort-icon"></span></th>
+		  <th>Delete</th>
 		  {% endif %}
 		</tr>
     </thead>
@@ -23,6 +24,7 @@
       <td>{{ post.pricePerTablet}}</td>
       {% if user.username == "admin" or user.username == "saurabhg" %}
       <td>{{ post.noOfTabletsInStores}}</td>
+	  <td><a href="{% url 'med_delete' pk=post.pk %}" onclick="return confirmDelete('{{ post.medicineName }}','/list/')"><button type="button" class="save btn btn-default">Delete</button></a></td>
       {% endif %}
     </tr>
     {% endfor %}

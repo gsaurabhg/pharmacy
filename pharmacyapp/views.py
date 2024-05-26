@@ -47,7 +47,25 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'pharmacyapp/post_detail.html', {'post': post})
 
-@login_required    
+
+@login_required
+
+def med_delete(request, pk):
+    med = get_object_or_404(Post, pk=pk)
+    medName=med.medicineName
+    med.delete()
+    messages.info(request,"Medicine: "+medName+" Deleted from the records")
+    Ob_Gyn =  Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='Ob-Gyn').order_by('medicineName')
+    Urology = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='Urology').order_by('medicineName')
+    Common = Post.objects.all().filter(noOfTabletsInStores__gt=0,expiryDate__gt=timezone.now(),medCategory__exact='General Medicine').order_by('medicineName')
+    expired_nill = Post.objects.all().filter(Q(noOfTabletsInStores=0) | Q(expiryDate__lt=timezone.now()) | Q(medCategory__exact='Select')).order_by('medicineName')
+    return render(request, 'pharmacyapp/post_list.html', {
+        'Ob_Gyn': Ob_Gyn,
+        'Urology' : Urology,
+        'Common' : Common,
+        'expired_nill' : expired_nill
+    })
+
 def post_new(request):
     current_user = request.user.username
     currentDate = datetime.datetime.now().date()
