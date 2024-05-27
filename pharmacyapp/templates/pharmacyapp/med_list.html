@@ -1,32 +1,32 @@
-<table id="stock-table">
+<table id="{{ table_id }}">
     <thead>
-		<tr>
-		  <th onclick="sortTable(0)">Product Name<span class="sort-icon"></span></th>
-		  <th onclick="sortTable(1)">Batch No<span class="sort-icon"></span></th>
-		  <th onclick="sortTable(2)">Date of Expiry<span class="sort-icon"></span></th>
-		  <th onclick="sortTable(3)">Tablets/Unit Price<span class="sort-icon"></span></th>
-		  {% if user.username == "admin" or user.username == "saurabhg" %}
-		  <th onclick="sortTable(4)">Remaining tablets/units in store<span class="sort-icon"></span></th>
-		  <th>Delete</th>
-		  {% endif %}
-		</tr>
+        <tr>
+            <th onclick="sortTable(0, '{{ table_id }}')">Product Name<span class="sort-icon"></span></th>
+            <th onclick="sortTable(1, '{{ table_id }}')">Batch No<span class="sort-icon"></span></th>
+            <th onclick="sortTable(2, '{{ table_id }}')">Date of Expiry<span class="sort-icon"></span></th>
+            <th onclick="sortTable(3, '{{ table_id }}')">Tablets/Unit Price<span class="sort-icon"></span></th>
+            {% if user.username == "admin" or user.username == "saurabhg" %}
+            <th onclick="sortTable(4, '{{ table_id }}')">Remaining tablets/units in store<span class="sort-icon"></span></th>
+            <th>Delete</th>
+            {% endif %}
+        </tr>
     </thead>
     <tbody>
-    {% for post in posts %}
-    <tr>
-      {% if user.username == "admin" or user.username == "saurabhg" %}
-      <td><a href="{% url 'post_detail' pk=post.pk %}">{{ post.medicineName }}</a></td>
-      {% else %}
-      <td>{{ post.medicineName }}</td>
-      {% endif %}
-      <td>{{ post.batchNo }}</td>
-      <td>{{ post.expiryDate}}</td>
-      <td>{{ post.pricePerTablet}}</td>
-      {% if user.username == "admin" or user.username == "saurabhg" %}
-      <td>{{ post.noOfTabletsInStores}}</td>
-	  <td><a href="{% url 'med_delete' pk=post.pk %}" onclick="return confirmDelete('{{ post.medicineName }}','/list/')"><button type="button" class="save btn btn-default">Delete</button></a></td>
-      {% endif %}
-    </tr>
-    {% endfor %}
+        {% for post in posts %}
+        <tr>
+            {% if user.username == "admin" or user.username == "saurabhg" %}
+            <td><a href="{% url 'post_detail' pk=post.pk %}">{{ post.medicineName }}</a></td>
+            {% else %}
+            <td>{{ post.medicineName }}</td>
+            {% endif %}
+            <td>{{ post.batchNo }}</td>
+            <td>{{ post.expiryDate}}</td>
+            <td>{{ post.pricePerTablet}}</td>
+            {% if user.username == "admin" or user.username == "saurabhg" %}
+            <td>{{ post.noOfTabletsInStores}}</td>
+            <td><a href="{% url 'med_delete' pk=post.pk %}" onclick="return confirmDelete('{{ post.medicineName }}','/list/')"><button type="button" class="save btn btn-default">Delete</button></a></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
     </tbody>
 </table>

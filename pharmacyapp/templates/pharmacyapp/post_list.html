@@ -18,8 +18,8 @@
     <caption><h1>Products in Stock</h1></caption>
 
     <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" id="Ob_Gyn-tab" data-toggle="tab" href="#Ob_Gyn">Ob_Gyn</a>
+        <li class="nav-item active">
+            <a class="nav-link" id="Ob_Gyn-tab" data-toggle="tab" href="#Ob_Gyn">Ob_Gyn</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="Urology-tab" data-toggle="tab" href="#Urology">Urology</a>
@@ -35,19 +35,19 @@
     <div class="tab-content">
         <div id="Ob_Gyn" class="tab-pane show active">
             <!-- Content for Obs and Gyn -->
-            {% include 'pharmacyapp/med_list.html' with posts=Ob_Gyn %}
+            {% include 'pharmacyapp/med_list.html' with posts=Ob_Gyn table_id="stock-table-obgyn" %}
         </div>
-        <div id="Urology" class="tab-pane fade">
+        <div id="Urology" class="tab-pane">
             <!-- Content for Urology -->
-            {% include 'pharmacyapp/med_list.html' with posts=Urology %}
+            {% include 'pharmacyapp/med_list.html' with posts=Urology table_id="stock-table-urology" %}
         </div>
         <div id="Common" class="tab-pane fade">
             <!-- Content for General Medicines-->
-            {% include 'pharmacyapp/med_list.html' with posts=Common %}
+            {% include 'pharmacyapp/med_list.html' with posts=Common table_id="stock-table-common" %}
         </div>
         <div id="expired_nill" class="tab-pane fade">
 			<!-- Content for expired or out of stock medicine -->
-			{% include 'pharmacyapp/med_list.html' with posts=expired_nill %}
+			{% include 'pharmacyapp/med_list.html' with posts=expired_nill table_id="stock-table-expired" %}
         </div>
     </div>
 
