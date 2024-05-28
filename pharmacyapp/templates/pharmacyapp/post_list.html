@@ -18,16 +18,16 @@
     <caption><h1>Products in Stock</h1></caption>
 
     <ul class="nav nav-tabs">
-        <li class="nav-item active">
+        <li class="nav-item {% if not active_tab or active_tab == 'stock-table-obgyn' %}active{% endif %}">
             <a class="nav-link" id="Ob_Gyn-tab" data-toggle="tab" href="#Ob_Gyn">Ob_Gyn</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {% if active_tab == 'stock-table-urology' %}active{% endif %}">
             <a class="nav-link" id="Urology-tab" data-toggle="tab" href="#Urology">Urology</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {% if active_tab == 'stock-table-common' %}active{% endif %}">
             <a class="nav-link" id="Common-tab" data-toggle="tab" href="#Common">General Medicine</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {% if active_tab == 'stock-table-expired' %}active{% endif %}">
 		    <a class="nav-link" id="expired_nill-tab" data-toggle="tab" href="#expired_nill">Expired or Out Of Stock</a>
         </li>
     </ul>
