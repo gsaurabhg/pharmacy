@@ -50,7 +50,7 @@ def post_detail(request, pk):
 
 @login_required
 
-def med_delete(request, pk):
+def med_delete(request, pk,active_tab):
     med = get_object_or_404(Post, pk=pk)
     medName=med.medicineName
     med.delete()
@@ -63,7 +63,8 @@ def med_delete(request, pk):
         'Ob_Gyn': Ob_Gyn,
         'Urology' : Urology,
         'Common' : Common,
-        'expired_nill' : expired_nill
+        'expired_nill' : expired_nill,
+        'active_tab': active_tab
     })
 
 def post_new(request):

@@ -32,24 +32,25 @@
         </li>
     </ul>
 
-    <div class="tab-content">
-        <div id="Ob_Gyn" class="tab-pane show active">
-            <!-- Content for Obs and Gyn -->
-            {% include 'pharmacyapp/med_list.html' with posts=Ob_Gyn table_id="stock-table-obgyn" %}
-        </div>
-        <div id="Urology" class="tab-pane">
-            <!-- Content for Urology -->
-            {% include 'pharmacyapp/med_list.html' with posts=Urology table_id="stock-table-urology" %}
-        </div>
-        <div id="Common" class="tab-pane fade">
-            <!-- Content for General Medicines-->
-            {% include 'pharmacyapp/med_list.html' with posts=Common table_id="stock-table-common" %}
-        </div>
-        <div id="expired_nill" class="tab-pane fade">
-			<!-- Content for expired or out of stock medicine -->
-			{% include 'pharmacyapp/med_list.html' with posts=expired_nill table_id="stock-table-expired" %}
-        </div>
+<div class="tab-content">
+    <div id="Ob_Gyn" class="tab-pane {% if not active_tab or active_tab == 'stock-table-obgyn' %}show active{% endif %}">
+        <!-- Content for Obs and Gyn -->
+        {% include 'pharmacyapp/med_list.html' with posts=Ob_Gyn table_id="stock-table-obgyn" %}
     </div>
+    <div id="Urology" class="tab-pane {% if active_tab == 'stock-table-urology' %}show active{% endif %}">
+        <!-- Content for Urology -->
+        {% include 'pharmacyapp/med_list.html' with posts=Urology table_id="stock-table-urology" %}
+    </div>
+    <div id="Common" class="tab-pane {% if active_tab == 'stock-table-common' %}show active{% endif %}">
+        <!-- Content for General Medicines-->
+        {% include 'pharmacyapp/med_list.html' with posts=Common table_id="stock-table-common" %}
+    </div>
+    <div id="expired_nill" class="tab-pane {% if active_tab == 'stock-table-expired' %}show active{% endif %}">
+        <!-- Content for expired or out of stock medicine -->
+        {% include 'pharmacyapp/med_list.html' with posts=expired_nill table_id="stock-table-expired" %}
+    </div>
+</div>
+
 
 
 {% endblock body_block%}

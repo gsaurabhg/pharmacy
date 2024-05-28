@@ -24,7 +24,7 @@
             <td>{{ post.pricePerTablet}}</td>
             {% if user.username == "admin" or user.username == "saurabhg" %}
             <td>{{ post.noOfTabletsInStores}}</td>
-            <td><a href="{% url 'med_delete' pk=post.pk %}" onclick="return confirmDelete('{{ post.medicineName }}','/list/')"><button type="button" class="save btn btn-default">Delete</button></a></td>
+            <td><a href="{% url 'med_delete' pk=post.pk active_tab=table_id %}" onclick="return confirmDelete('{{ post.medicineName }}','{% url 'post_list' %}?active_tab={{ table_id }}')"><button type="button" class="save btn btn-default">Delete</button></a></td>
             {% endif %}
         </tr>
         {% endfor %}

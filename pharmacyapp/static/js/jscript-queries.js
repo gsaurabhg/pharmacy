@@ -199,9 +199,17 @@ function printReturnInvoice(divName) {
      document.body.innerHTML = originalContents;
 }
 
-function confirmDelete(medicineName) {
-    var result = confirm("Are you sure you want to delete the medicine '" + medicineName + "'?");
-    return result;
-}
+
+$(document).ready(function() {
+	// Remember and set the active tab
+	var activeTab = "{{ active_tab }}";
+	$('.nav-tabs a[href="#' + activeTab + '"]').tab('show');
+
+	// Function to confirm delete
+	function confirmDelete(medName, url) {
+		var result = confirm("Are you sure you want to delete the medicine '" + medicineName + "'?");
+		return result;
+	}
+});
 
 console.log('End of Java script loading')
