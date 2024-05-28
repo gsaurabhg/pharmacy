@@ -12,6 +12,13 @@
         </tr>
     </thead>
     <tbody>
+    <script>
+		function confirmDelete(medName, redirectUrl) {
+				console.log('confirmDelete function is called');
+				var confirmMessage = "Are you sure you want to delete " + medName + "?";
+				return confirm(confirmMessage);
+		}
+		</script>
         {% for post in posts %}
         <tr>
             {% if user.username == "admin" or user.username == "saurabhg" %}
