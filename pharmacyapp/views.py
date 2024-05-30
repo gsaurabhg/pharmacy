@@ -306,10 +306,13 @@ def patient_details(request):
             return render(request, 'pharmacyapp/possibilites.html', {'patientRecord': patientRecord})  
             #####MAKE THE BILL FORM IN 2 FRAMES
         elif request.POST.get('newReg'):
+            if patientPhoneNoToSearch == "":
+                messages.info(request, "Enter Phone Number")
+                return render(request, 'pharmacyapp/patient_details.html', {'form': form})
             existingRecordFound = PatientDetail.objects.filter(patientName__contains=patientNameToSearch,patientPhoneNo__exact = patientPhoneNoToSearch)
             if existingRecordFound:
-                messages.info(request, "Patient Details already exists! Click Search Button")
-                return render(request, 'pharmacyapp/patient_details.html', {'form': form})
+            	messages.info(request, "Patient Details already exists! Click Search Button")
+            	return render(request, 'pharmacyapp/patient_details.html', {'form': form})
             patientDetail = form.save(commit=False)
             patientDetail.patientID = 'AMC00'+str(PatientDetail.objects.count())
             patientDetail.save()
