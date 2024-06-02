@@ -11,19 +11,8 @@ function sortTable(columnIndex, tableId) {
     var tbody = table.querySelector('tbody');
     var rows = Array.from(tbody.rows); // Convert HTMLCollection to array for sorting
     var switching = true;
-    var dir = 'asc';
+    var dir;
 
-    // Toggle sorting direction
-    if (columnIndex === 0) {
-        return;
-    }
-
-    // Update sort icon
-    //var icon = document.querySelectorAll('.sort-icon');
-    //icon.forEach(function(element) {
-    //    element.innerHTML = ''; // Clear previous icons
-    //});
-    //icon[columnIndex].innerHTML = dir === 'asc' ? '&#9650;' : '&#9660;';
 
     // Update sort icon for the specific table and column
     var headerRow = table.querySelector('thead tr');
@@ -32,8 +21,14 @@ function sortTable(columnIndex, tableId) {
         if (index === columnIndex) {
             var icon = cell.querySelector('.sort-icon');
             if (icon) {
-                icon.innerHTML = ''; // Clear previous icons
-                icon.innerHTML = dir === 'asc' ? '&#9650;' : '&#9660;';
+                if (icon.innerHTML === '▲') {
+                    dir = 'desc'; // If currently in ascending order, toggle to descending
+                    icon.innerHTML = '&#9660;'; // Change icon to descending
+                } else {
+                    dir = 'asc'; // If currently in descending order, toggle to ascending
+                    icon.innerHTML = '&#9650;'; // Change icon to ascending
+                }
+
             }
         } else {
             // Clear sort icons from other header cells
@@ -46,20 +41,48 @@ function sortTable(columnIndex, tableId) {
 
 
     // Perform radix sort on rows based on the column values
-    rows.sort(function(rowA, rowB) {
-        var xValue = rowA.cells[columnIndex].textContent.toLowerCase();
-        var yValue = rowB.cells[columnIndex].textContent.toLowerCase();
-        if (dir === 'asc') {
-            return xValue.localeCompare(yValue);
-        } else {
-            return yValue.localeCompare(xValue);
-        }
-    });
+	rows.sort(function(rowA, rowB) {
+		var xValue = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+		var yValue = rowB.cells[columnIndex].textContent.trim().toLowerCase();
 
-    // Rearrange rows in the table based on sorted order
-    rows.forEach(function(row) {
-        tbody.appendChild(row);
-    });
+		// Convert to numbers if possible
+		var xNum = parseFloat(xValue);
+		var yNum = parseFloat(yValue);
+
+		if (!isNaN(xNum) && !isNaN(yNum)) {
+			// If both values are numeric, compare as numbers
+			return (dir === 'asc') ? xNum - yNum : yNum - xNum;
+		} else {
+			// Otherwise, compare as strings
+			return (dir === 'asc') ? xValue.localeCompare(yValue) : yValue.localeCompare(xValue);
+		}
+	});
+
+// Rearrange rows in the table based on sorted order
+	rows.forEach(function(row) {
+		tbody.appendChild(row);
+	});
+	rows.sort(function(rowA, rowB) {
+		var xValue = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+		var yValue = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+
+		// Convert to numbers if possible
+		var xNum = parseFloat(xValue);
+		var yNum = parseFloat(yValue);
+
+		if (!isNaN(xNum) && !isNaN(yNum)) {
+			// If both values are numeric, compare as numbers
+			return (dir === 'asc') ? xNum - yNum : yNum - xNum;
+		} else {
+			// Otherwise, compare as strings
+			return (dir === 'asc') ? xValue.localeCompare(yValue) : yValue.localeCompare(xValue);
+		}
+	});
+
+	// Rearrange rows in the table based on sorted order
+	rows.forEach(function(row) {
+		tbody.appendChild(row);
+	});
 }
 
 
