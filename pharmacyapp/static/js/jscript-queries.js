@@ -210,6 +210,18 @@ function get_batch_no(request_data)
 	});
 }
 
+function get_quantity(request_data)
+{
+	var url = "/batchNo/" + request_data + "/get_quantity";
+	var batchNo = request_data;
+	$.getJSON(url, function(batchNo){
+	var quantity = '';
+	for (var i = 0; i < batchNo.length; i++) {
+		quantity = batchNo[i].fields['noOfTabletsInStores'];
+	}
+	$("#quantity").text("Max Quantity allowed: " + quantity );
+	});
+}
 
 function printReturnInvoice(divName) {
      var printContents = document.getElementById(divName).innerHTML;
@@ -222,17 +234,17 @@ function printReturnInvoice(divName) {
      document.body.innerHTML = originalContents;
 }
 
+if (typeof jQuery != 'undefined') {
+	$(document).ready(function() {
+		// Remember and set the active tab
+		var activeTab = "{{ active_tab }}";
+		$('.nav-tabs a[href="#' + activeTab + '"]').tab('show');
 
-$(document).ready(function() {
-	// Remember and set the active tab
-	var activeTab = "{{ active_tab }}";
-	$('.nav-tabs a[href="#' + activeTab + '"]').tab('show');
-
-	// Function to confirm delete
-	function confirmDelete(medName, url) {
-		var result = confirm("Are you sure you want to delete the medicine '" + medicineName + "'?");
-		return result;
-	}
-});
-
+		// Function to confirm delete
+		function confirmDelete(medName, url) {
+			var result = confirm("Are you sure you want to delete the medicine '" + medicineName + "'?");
+			return result;
+		}
+	});
+}
 console.log('End of Java script loading')

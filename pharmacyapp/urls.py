@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^medicineName/(?P<medName>[^"]*)/get_batch_no/$', views.get_batch_no,name='get_batch_no'),
     url(r'^bill/details/(?P<pk>\d+)/$', views.meds_edit, name='meds_edit'),
     url(r'^resetM$', views.meds_null, name='meds_null'),
+    url(r'^batchNo/(?P<batchNo>[^"]*)/get_quantity/$', views.get_quantity,name='get_quantity'),
 ]

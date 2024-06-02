@@ -16,11 +16,13 @@
 			<option value="{{form.medicineName}}</option>
   		</select></p>
 
-        <p><a>Quantity (Tablet/Bottle):</a></p> <p><a>{{form.orderQuantity}}</a></p>
-
-        <p><a>Batch Number:</a></p><p><select name="batchNo" id="batchNo" disabled="true">
-        <option>Batch Number</option>
+        <p><a>Batch Number:</a></p>
+        <p><select name="batchNo" id="batchNo" disabled="true" onmousedown="this.value='';" onchange="get_quantity(this.value);">
+        	<option>Batch Number</option>
         </select></p>
+
+        <p><a>Quantity (Tablet/Bottle):</a></p> <p><a>{{form.orderQuantity}}</a></p>
+		<a id="quantity"></a>
 
         <p><a>Discount:</a></p> <p><a>{{form.discount}}</a></p>
 

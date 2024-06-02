@@ -345,7 +345,7 @@ def bill_details(request, pk):
 @login_required    
 def medicine_order(request, pk):
     patientDetails = get_object_or_404(PatientDetail, pk=pk)
-    availableMeds = Post.objects.filter(noOfTabletsInStores__gt = 0).values().order_by('medicineName')
+    availableMeds = Post.objects.filter(noOfTabletsInStores__gt = 0,expiryDate__gt=timezone.now()).values().order_by('medicineName')
     medicineNameChoices = []
     for med in availableMeds:
         medicineNameChoices.append((med['medicineName'], med['medicineName']),)
@@ -517,7 +517,11 @@ def get_batch_no(request, medName):
     json_models = serializers.serialize("json", current_meds)
     return HttpResponse(json_models, content_type="application/javascript")
 
-
+def get_quantity(request, batchNo):
+    quantity = Post.objects.all().filter(batchNo__exact = batchNo)
+    json_models = serializers.serialize("json", quantity)
+    return HttpResponse(json_models, content_type="application/javascript")
+    
 @login_required
 def meds_edit(request, pk):
     billAdjust = Bill.objects.filter(pk__exact=pk).get()
