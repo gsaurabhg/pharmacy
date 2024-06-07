@@ -311,8 +311,8 @@ def patient_details(request):
                 return render(request, 'pharmacyapp/patient_details.html', {'form': form})
             existingRecordFound = PatientDetail.objects.filter(patientName__contains=patientNameToSearch,patientPhoneNo__exact = patientPhoneNoToSearch)
             if existingRecordFound:
-            	messages.info(request, "Patient Details already exists! Click Search Button")
-            	return render(request, 'pharmacyapp/patient_details.html', {'form': form})
+                messages.info(request, "Patient Details already exists! Click Search Button")
+                return render(request, 'pharmacyapp/patient_details.html', {'form': form})
             patientDetail = form.save(commit=False)
             patientDetail.patientID = 'AMC00'+str(PatientDetail.objects.count())
             patientDetail.save()
@@ -549,10 +549,15 @@ def meds_edit(request, pk):
         billAdjust.returnDiscountedPrice = Decimal(meds2Return)*billAdjust.pricePerTablet*Decimal(1-billAdjust.discount/100)
         billAdjust.returnSales = 'Y'
         billAdjust.save()
-        medsAdjust = Post.objects.all().filter(medicineName__exact = billAdjust.medicineName,batchNo__exact = billAdjust.batchNo).get()
-        medsAdjust.noOfTabletsSold = medsAdjust.noOfTabletsSold - int(meds2Return)
-        medsAdjust.noOfTabletsInStores = medsAdjust.noOfTabletsInStores + int(meds2Return)
-        medsAdjust.save()
+        try:
+            medsAdjust = Post.objects.all().filter(medicineName__exact = billAdjust.medicineName,batchNo__exact = billAdjust.batchNo).get()
+            medsAdjust.noOfTabletsSold = medsAdjust.noOfTabletsSold - int(meds2Return)
+            medsAdjust.noOfTabletsInStores = medsAdjust.noOfTabletsInStores + int(meds2Return)
+            medsAdjust.save()
+        except ObjectDoesNotExist:
+            messages.info(request,"Probably the medicine against the Batch No: "+billAdjust.batchNo+" is deleted from the records. Pls inform Admin")
+            logging.debug('Medicine with Batch Number : '+ billAdjust.batchNo + ' deleted')
+            logging.debug('Bill No. is: '+ billAdjust.billNo)
         billDet = Bill.objects.filter(billNo__exact=billAdjust.billNo)
         return render(request, 'pharmacyapp/meds_return.html', {'billDet':billDet})
     elif request.POST.get('back'):
