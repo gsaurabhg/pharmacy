@@ -1,12 +1,12 @@
 <table id="{{ table_id }}">
     <thead>
         <tr>
-            <th onclick="sortTable(0, '{{ table_id }}')">Product Name<span class="sort-icon"></span></th>
-            <th onclick="sortTable(1, '{{ table_id }}')">Batch No<span class="sort-icon"></span></th>
-            <th onclick="sortTable(2, '{{ table_id }}')">Date of Expiry<span class="sort-icon"></span></th>
-            <th onclick="sortTable(3, '{{ table_id }}')">Tablets/Unit Price<span class="sort-icon"></span></th>
+            <th onclick="sortTable(0, '{{ table_id }}')">Product Name<span class="sort-icon">▲▼</span></th>
+            <th onclick="sortTable(1, '{{ table_id }}')">Batch No<span class="sort-icon">▲▼</span></th>
+            <th onclick="sortTable(2, '{{ table_id }}')">Date of Expiry<span class="sort-icon">▲▼</span></th>
+            <th onclick="sortTable(3, '{{ table_id }}')">Tablets/Unit Price<span class="sort-icon">▲▼</span></th>
             {% if user.username == "admin" or user.username == "saurabhg" %}
-            <th onclick="sortTable(4, '{{ table_id }}')">Remaining tablets/units in store<span class="sort-icon"></span></th>
+            <th onclick="sortTable(4, '{{ table_id }}')">Remaining tablets/units in store<span class="sort-icon">▲▼</span></th>
             <th>Delete</th>
             {% endif %}
         </tr>
