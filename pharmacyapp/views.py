@@ -352,8 +352,8 @@ def medicine_order(request, pk):
     form = availableMedsForm(medicineNameChoices)
     if (request.method == "POST" and request.POST.get('addMed')):
         webFormFields = request.POST
-        if 'batchNo' not in webFormFields:
-            messages.info(request,"Please fill batchNo")
+        if ('batchNo' not in webFormFields or 'medicineName' not in webFormFields):
+            messages.info(request,"Please fill batch No/Medicine Name")
             return render(request, 'pharmacyapp/medicine_order.html', {'form': form})
         if (webFormFields['medicineName'] == '' or webFormFields['orderQuantity'] == '' or webFormFields['batchNo'] == ''):
             messages.info(request,"Please fill all the fields")
