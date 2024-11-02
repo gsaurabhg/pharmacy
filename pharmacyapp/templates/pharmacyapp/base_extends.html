@@ -38,6 +38,19 @@
 </div>
 
 <body>
+<script>
+	window.onload = function() {
+		{% if messages %}
+			const messages = [
+				{% for message in messages %}
+					"{{ message|escapejs }}"{% if not forloop.last %}, {% endif %}
+				{% endfor %}
+			];
+			messages.forEach(msg => alert(msg)); // Show each message in an alert
+		{% endif %}
+	};
+</script>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-2">
@@ -48,8 +61,11 @@
 			                        <span class="navbar-text">Hello, {{ user.username }}!</span>
 			                    </ul>
 			                    <ul class="nav-item">
-			                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-			                    </ul>
+									<form method="post" action="{% url 'logout' %}" style="display: inline;">
+										{% csrf_token %}
+										<button type="submit">Logout</button>
+									</form>
+								</ul>
 			                {% else %}
 			                    <ul class="nav-item">
 			                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
@@ -96,6 +112,8 @@
                             Admin
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+                            <li><a href="#" onclick="handleMenuClick(event)">Export Database</a></li>
+                            <li><a href="{% url 'load_data' %}">Load Database</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{% url 'meds_null' %}">Reset</a></li>
                         </ul>
                     </ul>
@@ -114,6 +132,10 @@
     </div>
 </div>
 
+<form id="dumpForm" method="post" action="{% url 'dump_database' %}" style="display: none;">
+	{% csrf_token %}
+	<input type="text" id="filename" name="filename" required>
+</form>
 
 <footer class="footer">
     <div class="container">

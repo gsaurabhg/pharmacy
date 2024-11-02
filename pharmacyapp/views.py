@@ -21,6 +21,13 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 import logging 
 from pharmacyapp.utilities import *
+#this is needed so that we can call call command fx via which we can execute any comman
+from django.core.management import call_command
+#this is to enable zipping
+import zipfile, io
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.db import transaction
 
 logging.basicConfig(filename="log.log", level=logging.DEBUG)
 
@@ -614,3 +621,114 @@ def meds_null(request):
     #BillLastFinYear.delete()
     posts = Post.objects.all().annotate(delta=F('noOfTabletsInStores')+F('noOfTabletsToTrf')).filter(delta__gt=0).order_by('medicineName')
     return render(request, 'pharmacyapp/post_list.html', {'posts':posts})
+
+@login_required
+def dump_database_view(request):
+    current_user = request.user.username
+    if current_user in ["admin", "saurabhg"]:
+        if request.method == 'POST':
+            filename = request.POST.get('filename')
+            current_directory = os.path.dirname(os.path.abspath(__file__))  # This gets the directory of the current file
+            project_root = os.path.abspath(os.path.join(current_directory, os.pardir, os.pardir))
+            zip_path = os.path.join(project_root, f"{filename}.zip")  # Path for the zip file
+            try:
+                 # Create an in-memory file-like buffer
+                output_buffer = io.StringIO()
+                call_command(
+                    'dumpdata',
+                    indent=2,  # equivalent to --indent 2
+                    exclude=[
+                        'auth.permission',               # equivalent to --exclude auth.permission
+                        'contenttypes.ContentType',      # equivalent to --exclude contenttypes.ContentType
+                        'admin.logentry',                # equivalent to --exclude admin.logentry
+                        'sessions.session'                # equivalent to --exclude sessions.session
+                    ],
+                    stdout=output_buffer                  # Redirect output to the file
+                )
+                # Get the string data from the buffer
+                json_data = output_buffer.getvalue()
+                
+                # Create a zip file
+                with zipfile.ZipFile(zip_path, 'w') as zip_file:
+                    zip_file.writestr(f"{filename}.json",  json_data)  # Add the dumped JSON data to the zip
+                #messages.success(request, f'Database dumped successfully to: {zip_path}')
+                #messages.info(request, f'Database dump created successfully and stored at {zip_path}.')
+                return render(request, 'pharmacyapp/confirm_email.html', {'zip_path': zip_path, 'filename': filename})
+                
+            except Exception as e:
+                messages.error(request, f'Error dumping database: {str(e)}')
+    else:
+        messages.info(request,"Operation Not allowed")
+    return redirect('welcome')
+    
+def send_email_view(request):
+    if request.method == 'POST':
+        zip_path = request.POST.get('zip_path')
+        recipient_email = request.POST.get('recipient_email')
+        email_password = request.POST.get('sender_password')
+
+        subject = 'Database Dump'
+        body = 'Please find the attached database dump.'
+        email = EmailMessage(subject, body, settings.EMAIL_HOST_USER, [recipient_email])
+        email.attach_file(zip_path)
+
+        try:
+            original_password = settings.EMAIL_HOST_PASSWORD  # Store the original password
+            settings.EMAIL_HOST_PASSWORD = email_password  # Set to the user input
+            
+            email.send(fail_silently=False)
+            messages.success(request, f'Database dumped and emailed successfully to: {recipient_email}')
+        except Exception as e:
+            messages.error(request, f'Error sending email: {str(e)}')
+        finally:
+            # Restore the original password in settings
+            settings.EMAIL_HOST_PASSWORD = original_password
+    return redirect('welcome')
+    
+def load_data_view(request):
+    current_user = request.user.username
+    if current_user in ["admin", "saurabhg"]:
+        if request.method == 'POST':
+            zip_file = request.FILES['zip_file']
+
+            # Create a temporary directory to unzip the file
+            temp_dir = os.path.join(settings.BASE_DIR, 'temp')
+            os.makedirs(temp_dir, exist_ok=True)
+
+            # Save the uploaded zip file
+            zip_path = os.path.join(temp_dir, zip_file.name)
+            with open(zip_path, 'wb+') as f:
+                for chunk in zip_file.chunks():
+                    f.write(chunk)
+
+            try:
+                # Unzip the file
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    zip_ref.extractall(temp_dir)
+
+                # Get the base name of the zip file (without extension) to create the JSON file path
+                json_file_name = os.path.splitext(zip_file.name)[0] + '.json'  # Change the extension to .json
+                json_file_path = os.path.join(temp_dir, json_file_name)
+
+                # Clear existing data from the database
+                with transaction.atomic():
+                    call_command('flush', '--no-input')  # Remove old data; use with caution
+
+                    # Load data from the JSON file
+                    call_command('loaddata', json_file_path)
+
+                messages.success(request, 'Data loaded successfully from the zip file!')
+                return redirect('welcome')  # Redirect to home page after success
+            except Exception as e:
+                messages.error(request, f'Error loading data: {str(e)}')
+            finally:
+                # Clean up temporary files
+                if os.path.exists(zip_path):
+                    os.remove(zip_path)
+                if os.path.exists(json_file_path):
+                    os.remove(json_file_path)
+            return redirect('welcome')
+    else:
+        messages.info(request,"Operation Not allowed")
+        return redirect('welcome')
+    return render(request, 'pharmacyapp/load_data.html')

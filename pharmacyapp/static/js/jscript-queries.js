@@ -247,4 +247,27 @@ if (typeof jQuery != 'undefined') {
 		}
 	});
 }
+
+function promptForFilename() {
+    const filename = prompt("Please enter the filename for the database to be exported:");
+    if (filename) {
+        document.getElementById("filename").value = filename; // Set the filename in the hidden input
+        document.getElementById("dumpForm").submit(); // Submit the form
+    }
+}
+
+function handleMenuClick(event) {
+    event.preventDefault(); // Prevent the default link behavior
+    promptForFilename(); // Call the function to show the prompt
+}
+
+function handleMenuClick_ld(event) {
+    event.preventDefault(); // Prevent the default link behavior
+    document.getElementById("loadForm").submit(); // Submit the form
+}
+
+function confirmLoadData() {
+    return confirm("Are you sure you want to flush old data and load new data from the uploaded JSON file?");
+}
+
 console.log('End of Java script loading')

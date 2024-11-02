@@ -23,4 +23,7 @@ urlpatterns = [
     url(r'^bill/details/(?P<pk>\d+)/$', views.meds_edit, name='meds_edit'),
     url(r'^resetM$', views.meds_null, name='meds_null'),
     url(r'^batchNo/(?P<batchNo>[^"]*)/get_quantity/$', views.get_quantity,name='get_quantity'),
+    path('dump-database/', views.dump_database_view, name='dump_database'),
+    path('send-email/', views.send_email_view, name='send_email'),
+    path('load-data/', views.load_data_view, name='load_data'),
 ]
