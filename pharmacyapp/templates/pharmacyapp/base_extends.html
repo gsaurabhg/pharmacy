@@ -38,18 +38,7 @@
 </div>
 
 <body>
-<script>
-	window.onload = function() {
-		{% if messages %}
-			const messages = [
-				{% for message in messages %}
-					"{{ message|escapejs }}"{% if not forloop.last %}, {% endif %}
-				{% endfor %}
-			];
-			messages.forEach(msg => alert(msg)); // Show each message in an alert
-		{% endif %}
-	};
-</script>
+
 
 <div class="container-fluid">
     <div class="row">
